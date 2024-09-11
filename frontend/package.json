@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "babel-plugin-react-compiler": "^0.0.0-experimental-fe484b5-20240911",
-    "eslint-plugin-react-compiler": "^0.0.0-experimental-5c9a529-20240911",
     "react": "^19.0.0-rc-d6cb4e77-20240911",
     "react-dom": "^19.0.0-rc-d6cb4e77-20240911",
     "vite-plugin-babel": "^1.2.0"
@@ -22,6 +21,7 @@
     "@types/react-dom": "npm:types-react-dom@rc",
     "@vitejs/plugin-react": "^4.3.1",
     "eslint": "^9.9.0",
+    "eslint-plugin-react-compiler": "^0.0.0-experimental-5c9a529-20240911",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
