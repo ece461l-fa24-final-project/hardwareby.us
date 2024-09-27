@@ -39,7 +39,7 @@ fn start_dev() {
 fn start_prod() {
   let secrect_key_base = wisp.random_string(64)
   let assert Ok(result) =
-    wisp_mist.handler(router.handle_request, secrect_key_base)
+    handler(router.handle_request, secrect_key_base)
     |> mist.new
     |> mist.port(443)
     |> mist.start_https(
