@@ -1,6 +1,9 @@
 import app/router
 import gleam/erlang/os
 import gleam/erlang/process
+import gleam/http/request.{type Request}
+import gleam/http/response.{type Response}
+import gleam/string
 import mist
 import wisp
 import wisp/wisp_mist
@@ -25,7 +28,7 @@ pub fn main() {
 fn start_dev() {
   let secrect_key_base = wisp.random_string(64)
   let assert Ok(result) =
-    wisp_mist.handler(router.handle_request, secrect_key_base)
+    handler(router.handle_request, secrect_key_base)
     |> mist.new
     |> mist.port(8080)
     |> mist.start_http
@@ -45,4 +48,19 @@ fn start_prod() {
     )
 
   result
+}
+
+fn handler(
+  handler: fn(wisp.Request) -> wisp.Response,
+  secret_key_base: String,
+) -> fn(Request(mist.Connection)) -> Response(mist.ResponseData) {
+  let fun = wisp_mist.handler(handler, secret_key_base)
+
+  fn(req: Request(_)) {
+    wisp.log_info(
+      "New Connection: " <> string.inspect(mist.get_client_info(req.body)),
+    )
+
+    fun(req)
+  }
 }
