@@ -1,3 +1,4 @@
+
 import gleam/http
 import gleam/int
 import gleam/string
@@ -30,3 +31,4 @@ fn log_request(
   |> wisp.log_info
   response
 }
+
