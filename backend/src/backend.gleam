@@ -1,4 +1,5 @@
 import app/router
+import app/web.{Context}
 import gleam/erlang/os
 import gleam/erlang/process
 import gleam/http/request.{type Request}
@@ -26,9 +27,11 @@ pub fn main() {
 }
 
 fn start_dev() {
-  let secrect_key_base = wisp.random_string(64)
+  let secret_key_base = wisp.random_string(64)
+  let ctx = Context(router.static_directory())
+
   let assert Ok(result) =
-    handler(router.handle_request, secrect_key_base)
+    handler(router.handle_request(_, ctx), secret_key_base)
     |> mist.new
     |> mist.port(8080)
     |> mist.start_http
@@ -37,9 +40,11 @@ fn start_dev() {
 }
 
 fn start_prod() {
-  let secrect_key_base = wisp.random_string(64)
+  let secret_key_base = wisp.random_string(64)
+  let ctx = Context(router.static_directory())
+
   let assert Ok(result) =
-    handler(router.handle_request, secrect_key_base)
+    handler(router.handle_request(_, ctx), secret_key_base)
     |> mist.new
     |> mist.port(443)
     |> mist.start_https(
