@@ -1,24 +1,18 @@
-import { useState } from 'react'
-import './App.css'
 import ProjectView from './ProjectView'
 import UserView from './UserView'
+import AuthProvider, {useAuth} from './contexts/AuthContext'
+import './App.css'
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
-  
-  if (loggedIn) {
-    return (
-      <>
-        <ProjectView/>
-      </> 
-    )
-  } else {
-    return (
-      <>
-        <UserView loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>
-      </>
-    )
-  }
+  const auth = useAuth();
+
+  return (
+    <>
+      <AuthProvider>
+        {auth.user?.token ? <ProjectView /> : <UserView />}
+      </AuthProvider>
+    </>
+  )
 }
 
 export default App
