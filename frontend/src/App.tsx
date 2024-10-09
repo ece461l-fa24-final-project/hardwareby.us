@@ -1,16 +1,16 @@
-import ProjectView from './ProjectView'
-import UserView from './UserView'
-import AuthProvider, {useAuth} from './contexts/AuthContext'
+import { BrowserRouter as Router } from 'react-router-dom'
+import AppRoutes from "./AppRoutes"
+import AuthProvider from './contexts/AuthContext'
 import './App.css'
 
 function App() {
-  const auth = useAuth();
-
   return (
     <>
-      <AuthProvider>
-        {auth.user?.token ? <ProjectView /> : <UserView />}
-      </AuthProvider>
+      <Router>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </Router>
     </>
   )
 }

@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "babel-plugin-react-compiler": "^0.0.0-experimental-fe484b5-20240911",
+    "babel-plugin-react-compiler": "^0.0.0-experimental-58c2b1c-20241007",
     "react": "^19.0.0-rc-d6cb4e77-20240911",
     "react-dom": "^19.0.0-rc-d6cb4e77-20240911",
+    "react-router": "^6.26.2",
+    "react-router-dom": "^6.26.2",
     "vite-plugin-babel": "^1.2.0"
   },
   "devDependencies": {

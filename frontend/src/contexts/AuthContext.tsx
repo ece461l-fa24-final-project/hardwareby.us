@@ -1,6 +1,6 @@
 import { useContext, createContext, useState, ReactNode } from "react";
 
-type UserData = {
+export type UserData = {
     username: string;
     token: string;
 };
