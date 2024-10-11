@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/approutes.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/contexts/authcontext.tsx","./src/views/loginview.tsx","./src/views/projectview.tsx","./src/views/signupview.tsx"],"version":"5.6.3"}
+{"root":["./src/App.tsx","./src/AppRoutes.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/contexts/AuthContext.tsx","./src/views/LoginView.tsx","./src/views/ProjectView.tsx","./src/views/SignupView.tsx"],"version":"5.6.3"}
