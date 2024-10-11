@@ -7,6 +7,9 @@ const ReactCompilerConfig = {};
 // https://vitejs.dev/config/
 export default defineConfig(() => {
   return {
+    build: {
+      target: 'esnext'
+    },
     plugins: [
       react({
         babel: {
