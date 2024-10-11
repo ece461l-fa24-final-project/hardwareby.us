@@ -1,5 +1,4 @@
-
-function LoginView() {
+export default function LoginView() {
     return (
         <>
             <div>
@@ -8,5 +7,3 @@ function LoginView() {
         </>
     )
 }
-
-export default LoginView;

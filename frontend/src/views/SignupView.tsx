@@ -1,13 +1,4 @@
-import { useState } from "react";
-
-function SignupView() {
-    const [password, setPassword] = useState<string | undefined>(undefined);
-    const [confirmPassword, setConfirmPassword] = useState<string | undefined>(undefined);
-
-
-    const verifyPasswords = () => {
-        return password != undefined && confirmPassword != undefined && password != confirmPassword;
-    }
+export default function SignupView() {
 
     return (
         <>
@@ -17,5 +8,3 @@ function SignupView() {
         </>
     )
 }
-
-export default SignupView;

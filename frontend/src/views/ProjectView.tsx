@@ -1,6 +1,5 @@
-function ProjectView() {
+export default function ProjectView() {
     return  (
         <>Project Management</>
     )
 }
-export default ProjectView
