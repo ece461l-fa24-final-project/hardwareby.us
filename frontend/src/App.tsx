@@ -1,16 +1,14 @@
-import { BrowserRouter as Router } from 'react-router-dom'
-import AppRoutes from "./AppRoutes"
-import AuthProvider from './contexts/AuthContext'
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+import LoginView from './views/LoginView';
+import ProjectView from './views/ProjectView';
 
 function App() {
   return (
     <>
-      <Router>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
-      </Router>
+      <Routes>
+        <Route path="/login" element={<LoginView />} />
+        <Route path="/projects" element={<ProjectView />} />
+      </Routes>
     </>
   )
 }
