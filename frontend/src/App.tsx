@@ -1,16 +1,23 @@
 import { Routes, Route } from 'react-router-dom';
 import LoginView from './views/LoginView';
 import ProjectView from './views/ProjectView';
+import AuthProvider from "./contexts/Auth.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
-function App() {
+export default function App() {
   return (
     <>
-      <Routes>
-        <Route path="/login" element={<LoginView />} />
-        <Route path="/projects" element={<ProjectView />} />
-      </Routes>
+        <AuthProvider>
+            <Routes>
+                <Route path="/login" element={<LoginView />} />
+                <Route path="/projects" element={
+                    <ProtectedRoute>
+                        <ProjectView />
+                    </ProtectedRoute>
+                } />
+            </Routes>
+        </AuthProvider>
     </>
   )
-}
+};
 
-export default App
