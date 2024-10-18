@@ -1,30 +1,29 @@
 import { createContext, useState, ReactNode } from "react";
 
-// Define types
-interface User {
-    id: string;
-    name: string;
-    // Add other user properties as needed
+/**
+ * Wrapper for the JWT given to us by the server
+ */
+interface Token {
+    data: string;
 }
 
-interface AuthContextType {
-    user: User | null;
-    login: (user: User) => void;
+interface TokenContext {
+    token: Token | null;
+    login: (token: Token) => void;
     logout: () => void;
 }
 
-// Create the context
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<TokenContext | null>(null);
 
-// AuthProvider component
+
 export default function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
+    const [token, setToken] = useState<Token | null>(null);
 
-    const login = (user: User) => setUser(user);
-    const logout = () => setUser(null);
+    const login = (token: Token) => setToken(token);
+    const logout = () => setToken(null);
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ token: token, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
