@@ -5,21 +5,21 @@ import AuthProvider from "./contexts/Auth.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 export default function App() {
-  return (
-    <>
-      <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<LoginView />} />
-          <Route
-            path="/projects"
-            element={
-              <ProtectedRoute>
-                <ProjectView />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </AuthProvider>
-    </>
-  );
+    return (
+        <>
+            <AuthProvider>
+                <Routes>
+                    <Route path="/login" element={<LoginView />} />
+                    <Route
+                        path="/projects"
+                        element={
+                            <ProtectedRoute>
+                                <ProjectView />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </AuthProvider>
+        </>
+    );
 }

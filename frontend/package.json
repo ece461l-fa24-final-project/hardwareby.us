@@ -1,39 +1,39 @@
 {
-  "name": "frontend",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build && mkdir -p ../backend/priv/static && cp -r ./dist/* ../backend/priv/static",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "babel-plugin-react-compiler": "^0.0.0-experimental-ad3b12a-20241011",
-    "react": "^19.0.0-rc-09111202-20241011",
-    "react-dom": "^19.0.0-rc-09111202-20241011",
-    "react-router": "^6.27",
-    "react-router-dom": "6",
-    "vite-plugin-babel": "^1.2.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.12.0",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc",
-    "@vitejs/plugin-react": "^4.3.2",
-    "eslint": "^9.12.0",
-    "eslint-plugin-react-compiler": "^0.0.0-experimental-45ae4c3-20241011",
-    "eslint-plugin-react-hooks": "^5.1.0-rc",
-    "eslint-plugin-react-refresh": "^0.4.12",
-    "globals": "^15.11.0",
-    "prettier": "3.3.3",
-    "typescript": "^5.6.3",
-    "typescript-eslint": "^8.8.1",
-    "vite": "^5.4.8"
-  },
-  "overrides": {
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
-  }
+    "name": "frontend",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build && mkdir -p ../backend/priv/static && cp -r ./dist/* ../backend/priv/static",
+        "lint": "eslint .",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "babel-plugin-react-compiler": "^0.0.0-experimental-ad3b12a-20241011",
+        "react": "^19.0.0-rc-09111202-20241011",
+        "react-dom": "^19.0.0-rc-09111202-20241011",
+        "react-router": "^6.27",
+        "react-router-dom": "6",
+        "vite-plugin-babel": "^1.2.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.12.0",
+        "@types/react": "npm:types-react@rc",
+        "@types/react-dom": "npm:types-react-dom@rc",
+        "@vitejs/plugin-react": "^4.3.2",
+        "eslint": "^9.12.0",
+        "eslint-plugin-react-compiler": "^0.0.0-experimental-45ae4c3-20241011",
+        "eslint-plugin-react-hooks": "^5.1.0-rc",
+        "eslint-plugin-react-refresh": "^0.4.12",
+        "globals": "^15.11.0",
+        "prettier": "3.3.3",
+        "typescript": "^5.6.3",
+        "typescript-eslint": "^8.8.1",
+        "vite": "^5.4.8"
+    },
+    "overrides": {
+        "@types/react": "npm:types-react@rc",
+        "@types/react-dom": "npm:types-react-dom@rc"
+    }
 }
