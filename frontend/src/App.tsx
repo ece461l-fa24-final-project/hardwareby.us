@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/LoginView";
 import ProjectView from "./views/ProjectView";
 import AuthProvider from "./contexts/Auth.tsx";
@@ -9,6 +9,10 @@ export default function App() {
         <>
             <AuthProvider>
                 <Routes>
+                    <Route
+                        path="/"
+                        element={<Navigate to="/projects" replace />}
+                    />
                     <Route path="/login" element={<LoginView />} />
                     <Route
                         path="/projects"
