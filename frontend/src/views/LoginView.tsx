@@ -5,5 +5,5 @@ export default function LoginView() {
                 <h1>Login to Hardware By Us!</h1>
             </div>
         </>
-    )
+    );
 }

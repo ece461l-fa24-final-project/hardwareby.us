@@ -15,7 +15,6 @@ interface TokenContext {
 
 export const AuthContext = createContext<TokenContext | null>(null);
 
-
 export default function AuthProvider({ children }: { children: ReactNode }) {
     const [token, setToken] = useState<Token | null>(null);
 
