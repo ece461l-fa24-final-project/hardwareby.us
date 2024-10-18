@@ -5,18 +5,119 @@
   text-align: center;
 }
 
+
+.navbar{
+
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1rem 2rem;
+background-color: orange;
+color: white;
+
+}
+
+.nav-hardwarelogo {
+  font-size: 1.5rem;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links li {
+  font-size: 1rem;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: white;
+}
+
+.nav-hardwarelogo:hover {
+  color: white;
+}
+
+
+/* Logo styling */
+.hardwarelogo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+
+.createNewProj{
+  padding-top: 1.5rem;
+  /* padding-bottom: 1rem; */
+
+
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
-.logo:hover {
+
+
+.project-exist-list {
+  margin: 2rem auto;
+  max-width: 600px;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.project-card {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.3rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.project-card h3 {
+  color: #333;
+}
+
+.project-card button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background-color: orange;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.project-card button:hover {
+  background-color: orange;
+}
+
+.project-exist-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+
+
+/* .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
-}
+} */
 
 @keyframes logo-spin {
   from {
