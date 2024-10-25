@@ -1,4 +1,4 @@
-name: test
+name: Gleam CI
 
 on:
   push:
