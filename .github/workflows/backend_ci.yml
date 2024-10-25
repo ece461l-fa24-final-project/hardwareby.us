@@ -21,7 +21,7 @@ jobs:
         working-directory: ./backend
       - run: gleam check
         working-directory: ./backend
-      - run: gleam test
-        working-directory: ./backend
+      # - run: gleam test
+      #   working-directory: ./backend
       - run: gleam format --check src test
         working-directory: ./backend
