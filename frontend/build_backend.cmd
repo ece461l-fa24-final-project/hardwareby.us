@@ -12,7 +12,6 @@ if not exist "C:\Program Files\Microsoft Visual Studio\2022\Community\VC" (
     ) else (
         echo Please install Visual Studio to continue.
     )
-    pause
     exit /b 1
 )
 
