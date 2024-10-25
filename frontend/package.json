@@ -4,8 +4,8 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "./build_backend && vite",
-        "build": "vite build && ./copy_frontend",
+        "dev": "../scripts/build_backend && vite",
+        "build": "vite build && ../scripts/copy_frontend",
         "lint": "eslint .",
         "preview": "vite preview"
     },
