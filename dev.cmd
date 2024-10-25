@@ -1,5 +1,9 @@
 @echo off
 setlocal
-set devscript=%~f0
+rem Need VS build env for esqlite
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
-escript.exe "%devscript:.cmd=%" %*
+
+cd ..\backend
+call gleam build || exit /b 1
+echo REMEMBER TO RUN GLEAM AS WELL
+

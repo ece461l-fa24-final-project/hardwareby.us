@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "../dev && vite",
         "build": "vite build && rm -r ../backend/priv/static && mkdir -p ../backend/priv/static && cp -r ./dist/* ../backend/priv/static",
         "lint": "eslint .",
         "preview": "vite preview"
