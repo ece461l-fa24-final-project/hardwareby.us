@@ -10,13 +10,14 @@ repository = { type = "github", user = "ece461l-fa24-final-project", repo = "har
 # https://gleam.run/writing-gleam/gleam-toml/.
 
 [dependencies]
-gleam_stdlib = ">= 0.34.0 and < 2.0.0"
-wisp = ">= 1.1.0 and < 2.0.0"
-sqlight = ">= 0.9.1 and < 1.0.0"
-mist = ">= 2.0.0 and < 3.0.0"
+gleam_stdlib = "~> 0.40.0"
+wisp = "~> 1.2.0"
+sqlight = "~> 0.9.1"
+mist = "~> 3.0.0"
 gleam_erlang = ">= 0.26.0 and < 1.0.0"
 gleam_http = ">= 3.7.0 and < 4.0.0"
 simplifile = ">= 2.2.0 and < 3.0.0"
+gzlib = ">= 1.0.1 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
