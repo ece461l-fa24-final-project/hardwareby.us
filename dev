@@ -23,10 +23,30 @@ main(_Args) ->
         frontend_cmd => "bun",
         frontend_args => ["run", "dev"]
     },
-
-    io:format("Checking that gleam is installed...~n"),
-    % TODO
     
+    io:format("Checking that gleam is installed...~n"),
+    Gleam = os:find_executable("gleam"),
+    case Gleam of
+      false ->
+        print_red("Gleam is not installed!!"),
+        io:format("  Please follow the directions at https://gleam.run to install it~n"),
+        io:format("  NOTE: On windows you can install the Gleam binary through winget instead of installing scoop~n"),
+        halt(1);
+      _ ->
+        io:format("Gleam found: ~s", [Gleam])
+      end,
+
+    io:format("Checking that bun is installed...~n"),
+    Bun = os:find_executable("bun"),
+    case Bun of
+      false ->
+        print_red("Bun is not installed!!"),
+        io:format("  Please follow the instructions at https://bun.sh to install it~n"),
+        halt(1);
+      _ ->
+        io:format("Bun found: ~s", [Bun])
+      end,
+
 
     % Start both servers
     BackendPid = start_backend(Config),
@@ -39,8 +59,8 @@ main(_Args) ->
             pid => BackendPid,
             name => "backend",
             restart_fn => fun() -> start_backend(Config) end
-        })
-                                end),
+        }) 
+    end),
 
     FrontendWatcher = spawn_link(fun() ->
         watch_directory(Config#{
@@ -49,7 +69,7 @@ main(_Args) ->
             name => "frontend",
             restart_fn => fun() -> start_frontend(Config) end
         })
-                                 end),
+    end),
 
     % Wait for signals or crashes
     wait_for_changes(#{
@@ -68,8 +88,7 @@ start_backend(Config) ->
         process_flag(trap_exit, true),
         Port = open_port({spawn_executable, os:find_executable(Cmd)},
             [{cd, Path}, {args, Args}, {line, 1024}, stream, use_stdio, stderr_to_stdout]),
-        port_loop(Port, "backend")
-               end).
+        port_loop(Port, "backend") end).
 
 start_frontend(Config) ->
     Cmd = maps:get(frontend_cmd, Config),
@@ -80,8 +99,7 @@ start_frontend(Config) ->
         process_flag(trap_exit, true),
         Port = open_port({spawn_executable, os:find_executable(Cmd)},
             [{cd, Path}, {args, Args}, {line, 1024}, stream, use_stdio, stderr_to_stdout]),
-        port_loop(Port, "frontend")
-               end).
+        port_loop(Port, "frontend") end).
 
 port_loop(Port, Name) ->
     receive
@@ -192,3 +210,6 @@ cleanup(State) ->
                          ok
                  end, State),
     ok.
+
+print_red(Text) ->
+    io:format("\e[31m~s\e[0m~n", [Text]).
