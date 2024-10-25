@@ -4,14 +4,9 @@ rem Need VS build env for esqlite
 
 if not exist "C:\Program Files\Microsoft Visual Studio\2022\Community\VC" (
     echo Visual Studio 2022 Community Edition is not installed with C/C++ support.
-    echo Would you like to download Visual Studio now? (Y/N)
-    set /p choice=""
-    if /i "%choice%"=="Y" (
-        start "" "https://visualstudio.microsoft.com/downloads/"
-        echo Opening Visual Studio download page...
-    ) else (
-        echo Please install Visual Studio to continue.
-    )
+    start "" "https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSFeaturesPage&passive=true&tailored=cplus&cid=2031#cplusplus"
+    echo Opening Visual Studio download page...
+    echo Please install Visual Studio with the C++ development toolset to continue
     exit /b 1
 )
 
