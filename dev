@@ -1,0 +1,5 @@
+#!/bin/sh 
+
+cd ../backend
+gleam build || exit 1
+echo REMEMBER TO RUN GLEAM AS WELL
