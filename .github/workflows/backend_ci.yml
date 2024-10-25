@@ -17,11 +17,19 @@ jobs:
           gleam-version: "1.5.1"
           rebar3-version: "3"
           # elixir-version: "1.15.4"
+      
       - run: gleam deps download
         working-directory: ./backend
       - run: gleam check
         working-directory: ./backend
+        env: 
+          ESQLITE_CFLAGS: "-O0"
       # - run: gleam test
       #   working-directory: ./backend
       - run: gleam format --check src test
         working-directory: ./backend
+      - name: Cache Gleam Packages
+        uses: actions/cache@v3
+        with:
+            path: |
+              ./backend/build/packages
