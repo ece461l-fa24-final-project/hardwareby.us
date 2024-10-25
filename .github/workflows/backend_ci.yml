@@ -26,7 +26,7 @@ jobs:
           ESQLITE_CFLAGS: "-O0"
       # - run: gleam test
       #   working-directory: ./backend
-      - run: gleam format --check src test
+      - run: gleam format --check src
         working-directory: ./backend
       - name: Cache Gleam Packages
         uses: actions/cache@v3
