@@ -1,7 +1,7 @@
 import birl
-import gwt
 import gleam/json
 import gleam/result
+import gwt
 import simplifile
 import wisp
 
@@ -20,8 +20,9 @@ pub fn generate_jwt(userid: Int, username: String) {
 }
 
 pub fn verify_jwt(jwt: String) {
-  let is_valid = jwt
-  |> gwt.from_signed_string(get_key())
+  let is_valid =
+    jwt
+    |> gwt.from_signed_string(get_key())
 
   result.is_ok(is_valid)
 }
