@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -e
+
+rm -r ../backend/priv/static && mkdir -p ../backend/priv/static && cp -r ./dist/* ../backend/priv/static
