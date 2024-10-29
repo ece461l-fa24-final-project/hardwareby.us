@@ -1,6 +1,4 @@
 import app/web.{type Context}
-import gleam/string_builder
-import simplifile
 import wisp.{type Request, type Response}
 
 pub fn handle_request(req: Request, ctx: Context) -> Response {
