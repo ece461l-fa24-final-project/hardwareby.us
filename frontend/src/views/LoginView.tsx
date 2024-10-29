@@ -4,7 +4,7 @@ import useAuth from "../hooks/Auth";
 export default function LoginView() {
     const auth = useAuth();
     const onSubmit = (userid: string, password: string) => {
-
+        return;
     }
 
     const validateUserId = (userid: string): boolean => {
@@ -19,7 +19,7 @@ export default function LoginView() {
         <>
             <div>
                 <h1>Login to Hardware By Us!</h1>
-                <UserForm {validator: {onSubmit, validateUserId, validatePassword}, buttonLabel: "Login"}/>
+                <UserForm props={{onSubmit, validateUserId, validatePassword}, "Login"}/>
             </div>
         </>
     );

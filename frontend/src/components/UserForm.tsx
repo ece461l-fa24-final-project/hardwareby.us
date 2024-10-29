@@ -6,7 +6,7 @@ export interface FormValidator {
     validatePassword: (password: string) => boolean,
 }
 
-export default function UserForm({ validator, buttonLabel }: {validator: FormValidator, buttonLabel: string}) {
+export default function UserForm(props: {validator: FormValidator, buttonLabel: string}) {
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
@@ -15,8 +15,8 @@ export default function UserForm({ validator, buttonLabel }: {validator: FormVal
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const userIdError = validator.validateUserId(userId);
-        const passwordError = validator.validatePassword(password);
+        const userIdError = props.validator.validateUserId(userId);
+        const passwordError = props.validator.validatePassword(password);
 
         //check if match
         if (userIdError || passwordError){
@@ -25,7 +25,7 @@ export default function UserForm({ validator, buttonLabel }: {validator: FormVal
         }
 
         //call the passed in onSubmit with userId and password
-        validator.onSubmit(userId, password);
+        props.validator.onSubmit(userId, password);
     };
 
     return (
@@ -51,7 +51,7 @@ export default function UserForm({ validator, buttonLabel }: {validator: FormVal
                 />
             </div>
 
-            <button type = "submit">{buttonLabel}</button> 
+            <button type = "submit">{props.buttonLabel}</button> 
             {error && <span className="error">{"Userid or Password is invalid"}</span>}
         </form>
     );
