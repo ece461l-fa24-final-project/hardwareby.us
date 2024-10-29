@@ -3,8 +3,13 @@ import LoginView from "./views/LoginView";
 import ProjectView from "./views/ProjectView";
 import AuthProvider from "./contexts/Auth.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import CreateProjectView from "./views/CreateProjectView.tsx";
+import { useNavigate } from "react-router-dom";
+
 
 export default function App() {
+    const navigate = useNavigate();
+
     return (
         <>
             <AuthProvider>
@@ -22,6 +27,15 @@ export default function App() {
                             </ProtectedRoute>
                         }
                     />
+                    <Route
+                        path="/createProject"
+                        element={
+                            <CreateProjectView onClose={() => {
+                                navigate('/projects');
+                                }} />
+                        }
+                    />
+
                 </Routes>
             </AuthProvider>
         </>
