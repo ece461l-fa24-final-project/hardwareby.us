@@ -54,13 +54,13 @@ pub fn middleware(
 }
 
 pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
-  todo
+  wisp.response(501)
 }
 
 pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
-  todo
+  wisp.response(501)
 }
 
 pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
-  todo
+  wisp.response(501)
 }
