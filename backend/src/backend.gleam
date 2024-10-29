@@ -1,3 +1,4 @@
+import app/auth
 import app/router
 import app/web.{Context}
 import gleam/erlang/os
@@ -27,7 +28,7 @@ pub fn main() {
 }
 
 fn start_dev() {
-  let secret_key_base = wisp.random_string(64)
+  let secret_key_base = auth.get_secret()
   let ctx = Context(router.static_directory())
 
   let assert Ok(result) =
@@ -40,7 +41,7 @@ fn start_dev() {
 }
 
 fn start_prod() {
-  let secret_key_base = wisp.random_string(64)
+  let secret_key_base = auth.get_secret()
   let ctx = Context(router.static_directory())
 
   let assert Ok(result) =
