@@ -1,6 +1,6 @@
-import app/auth
-import app/router
-import app/web.{Context}
+import backend/auth
+import backend/router
+import backend/web.{Context}
 import gleam/erlang/os
 import gleam/erlang/process
 import gleam/http/request.{type Request}
@@ -93,7 +93,7 @@ fn ip_to_string(ip: mist.IpAddress) -> String {
   }
 }
 
-fn static_directory() -> String {
+pub fn static_directory() -> String {
   let assert Ok(priv_directory) = wisp.priv_directory("backend")
   priv_directory <> "/static"
 }
