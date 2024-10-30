@@ -8,8 +8,10 @@ pub fn handle_request(req: Request, ctx: Context) -> Response {
 
   case wisp.path_segments(req) {
     [] -> {
-      let assert Ok(index) =
-        simplifile.read(ctx.static_directory <> "/index.html")
+      let index = case simplifile.read(ctx.static_directory <> "/index.html") {
+        Ok(file) -> file
+        _ -> "Hello, Joe!"
+      }
       wisp.html_response(string_builder.from_string(index), 200)
     }
     ["api", "v1", "auth", ..] -> web.auth(req, ctx)
