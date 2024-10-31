@@ -1,26 +1,23 @@
 import UserForm from "../components/UserForm";
 import useAuth from "../hooks/Auth";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginView() {
     const auth = useAuth();
-    const onSubmit = (userid: string, password: string) => {
-        return;
-    }
+    const navigate = useNavigate();
 
-    const validateUserId = (userid: string): boolean => {
-        return true;
-    }
-
-    const validatePassword = (password: string): boolean => {
-        return true;
-    }
+    const onSubmit = async (
+        userid: string,
+        password: string,
+    ): Promise<boolean> => {
+        return false;
+    };
 
     return (
         <>
-            <div>
-                <h1>Login to Hardware By Us!</h1>
-                <UserForm props={{onSubmit, validateUserId, validatePassword}, "Login"}/>
-            </div>
+            <h1>Login to Hardware By Us!</h1>
+            <UserForm submit={onSubmit} label="Log In" />
+            <button onClick={() => navigate("/signup")}>Signup</button>
         </>
     );
 }
