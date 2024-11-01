@@ -3,6 +3,7 @@ import backend/db
 import backend/router
 import gleam/erlang/os
 import gleam/erlang/process
+import gleam/http
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
 import gleam/int
@@ -65,17 +66,31 @@ fn handler(
   let fun = wisp_mist.handler(handler, secret_key_base)
 
   fn(req: Request(_)) {
+    let response = fun(req)
+
     let ip =
       mist.get_client_info(req.body)
       |> result.map(fn(x) { x.ip_address })
       |> result.map(ip_to_string)
 
     case ip {
-      Ok(val) -> wisp.log_info("New Connection: " <> val)
+      Ok(val) -> {
+        [
+          int.to_string(response.status),
+          " ",
+          string.uppercase(http.method_to_string(req.method)),
+          " ",
+          req.path,
+          " FROM ",
+          val,
+        ]
+        |> string.concat
+        |> wisp.log_info
+      }
       Error(e) -> wisp.log_alert("New Connection Failed: " <> string.inspect(e))
     }
 
-    fun(req)
+    response
   }
 }
 
