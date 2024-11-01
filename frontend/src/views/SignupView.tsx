@@ -5,23 +5,26 @@ export default function SignupView() {
     const navigate = useNavigate();
 
     //Signup function to handle the user registration process
-    const onSubmit = async (userId: string, password: string): Promise<boolean> => {
+    const onSubmit = async (
+        userId: string,
+        password: string,
+    ): Promise<boolean> => {
         try {
             //API call to create a new account
             const response = await fetch("api/v1/auth", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({userId, password}),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId, password }),
             });
 
             //Check if signup was successful
-            if(response.ok){
+            if (response.ok) {
                 //if so navigate the user to login page
-                navigate("api/v1/auth/login") //NEEDS TO BE CHANGED TO CORRECT API CALL
+                navigate("api/v1/auth/login"); //NEEDS TO BE CHANGED TO CORRECT API CALL
                 return true;
             } else {
                 //Handle error response (if user exists)
-                navigate("api/vs/auth/login")
+                navigate("api/vs/auth/login");
                 return false; //failed new creation
             }
         } catch (error) {
