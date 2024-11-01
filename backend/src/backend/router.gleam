@@ -1,6 +1,7 @@
 import backend/db
 import gleam/bit_array
 import gleam/bytes_builder
+import gleam/http
 import gleam/list
 import gleam/result
 import gleam/string
@@ -78,14 +79,20 @@ pub fn middleware(
 
 pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
   let assert ["api", "v1", "auth", ..route] = wisp.path_segments(req)
+
   case route {
-    ["login", ..] -> {
+    ["login"] -> {
+      use <- wisp.require_method(req, http.Get)
+
+      use params <- get_required_query(req, ["userid", "password"])
+      let assert [userid, password] = params
+
       wisp.response(501)
     }
     ["signup"] -> {
       wisp.response(501)
     }
-    _ -> wisp.not_found()
+    _ -> wisp.bad_request()
   }
 }
 
@@ -95,4 +102,23 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
 
 pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
   wisp.response(501)
+}
+
+fn get_required_query(
+  req: wisp.Request,
+  params: List(String),
+  next: fn(List(String)) -> wisp.Response,
+) -> wisp.Response {
+  let query = wisp.get_query(req)
+
+  let mapper = fn(param: String) { list.key_find(query, param) }
+
+  let vals =
+    params
+    |> list.try_map(mapper)
+
+  case vals {
+    Ok(params) -> next(params)
+    Error(_) -> wisp.bad_request()
+  }
 }
