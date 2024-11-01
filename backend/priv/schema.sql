@@ -13,4 +13,4 @@ create table if not exists users (
 ) strict;
 
 -- Index for faster userid lookups during authentication
-create index idx_users_usernid on users(userid);
+create index if not exists idx_users_userid on users(userid);
