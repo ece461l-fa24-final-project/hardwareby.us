@@ -1,3 +1,28 @@
+import React, { useState } from 'react';
+import CreateProjectDialog from '../Dialog/CreateProjectDialog'; // Adjust the import path as necessary
+
 export default function ProjectView() {
-    return <>Project Management</>;
+
+    const [isCreateProjectDialogOpen, setIsCreateProjectDialogOpen] = useState(false);
+
+    const handleOpenCreateProjectDialog = () => {
+        setIsCreateProjectDialogOpen(true);
+    };
+
+    const handleCloseCreateProjectDialog = () => {
+        setIsCreateProjectDialogOpen(false);
+    };
+
+    return (
+        <>
+            <div>
+                <h1>Login to Hardware By Us!</h1>
+                <button onClick={handleOpenCreateProjectDialog}>Create Project</button>
+            </div>
+            <CreateProjectDialog 
+                open={isCreateProjectDialogOpen} 
+                onClose={handleCloseCreateProjectDialog} 
+            />
+        </>
+    );
 }
