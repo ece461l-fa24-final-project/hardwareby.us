@@ -79,7 +79,7 @@ pub fn middleware(
 pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
   let assert ["api", "v1", "auth", ..route] = wisp.path_segments(req)
   case route {
-    ["login"] -> {
+    ["login", ..] -> {
       wisp.response(501)
     }
     ["signup"] -> {
