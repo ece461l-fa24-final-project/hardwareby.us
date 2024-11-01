@@ -1,6 +1,6 @@
 import backend
+import backend/db
 import backend/router
-import backend/web.{type Context, Context}
 import gleeunit
 import gleeunit/should
 import wisp/testing
@@ -9,9 +9,18 @@ pub fn main() {
   gleeunit.main()
 }
 
-fn with_context(testcase: fn(Context) -> t) -> t {
+fn with_database(f: fn(db.Connection) -> t) -> t {
+  let db = db.connect(":memory:")
+  let t = f(db)
+  t
+}
+
+fn with_context(testcase: fn(fn() -> router.Context) -> t) -> t {
+  use db <- with_database()
   // Create context to use in tests
-  let context = Context(static_directory: backend.static_directory())
+  let context = fn() {
+    router.Context(db, static_directory: backend.static_directory())
+  }
 
   // Run the testcase with the context
   testcase(context)
