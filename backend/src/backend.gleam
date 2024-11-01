@@ -1,6 +1,6 @@
 import backend/auth
+import backend/db
 import backend/router
-import backend/web.{Context}
 import gleam/erlang/os
 import gleam/erlang/process
 import gleam/http/request.{type Request}
@@ -16,47 +16,43 @@ import wisp/wisp_mist
 pub fn main() {
   wisp.configure_logger()
 
-  let is_prod = os.get_env("PRODUCTION")
+  let secret_key_base = auth.get_secret()
+  let database_name = database_name()
+  let static_directory = static_directory()
 
-  let _ = case is_prod {
+  // Initialisation that is run per-request
+  let make_context = fn() {
+    let db = db.connect(database_name)
+    router.Context(db: db, static_directory: static_directory)
+  }
+
+  let builder =
+    handler(router.handle_request(_, make_context), secret_key_base)
+    |> mist.new
+
+  let _ = case os.get_env("PRODUCTION") {
     Error(_) -> {
-      start_dev()
+      let assert Ok(result) =
+        builder
+        |> mist.port(8080)
+        |> mist.start_http
+
+      result
     }
     Ok(_) -> {
-      start_prod()
+      let assert Ok(result) =
+        builder
+        |> mist.port(443)
+        |> mist.start_https(
+          "/etc/letsencrypt/live/hardwareby.us/fullchain.pem",
+          "/etc/letsencrypt/live/hardwareby.us/privkey.pem",
+        )
+
+      result
     }
   }
 
   process.sleep_forever()
-}
-
-fn start_dev() {
-  let secret_key_base = auth.get_secret()
-  let ctx = Context(static_directory())
-
-  let assert Ok(result) =
-    handler(router.handle_request(_, ctx), secret_key_base)
-    |> mist.new
-    |> mist.port(8080)
-    |> mist.start_http
-
-  result
-}
-
-fn start_prod() {
-  let secret_key_base = auth.get_secret()
-  let ctx = Context(static_directory())
-
-  let assert Ok(result) =
-    handler(router.handle_request(_, ctx), secret_key_base)
-    |> mist.new
-    |> mist.port(443)
-    |> mist.start_https(
-      "/etc/letsencrypt/live/hardwareby.us/fullchain.pem",
-      "/etc/letsencrypt/live/hardwareby.us/privkey.pem",
-    )
-
-  result
 }
 
 /// NOTE(isaac): This is a very dumb way to log IPs, but I couldn't think of another way
@@ -96,4 +92,11 @@ fn ip_to_string(ip: mist.IpAddress) -> String {
 pub fn static_directory() -> String {
   let assert Ok(priv_directory) = wisp.priv_directory("backend")
   priv_directory <> "/static"
+}
+
+fn database_name() -> String {
+  case os.get_env("PRODUCTION_DATABASE") {
+    Ok(path) -> path
+    Error(Nil) -> "./database.sqlite"
+  }
 }
