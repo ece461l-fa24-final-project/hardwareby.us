@@ -40,7 +40,6 @@ pub fn middleware(
   ctx: Context,
   handle_request: fn(wisp.Request) -> wisp.Response,
 ) -> wisp.Response {
-  use <- wisp.log_request(req)
   use <- wisp.rescue_crashes
   use <- wisp.serve_static(req, under: "", from: ctx.static_directory)
 
@@ -78,7 +77,16 @@ pub fn middleware(
 }
 
 pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
-  wisp.response(501)
+  let assert ["api", "v1", "auth", ..route] = wisp.path_segments(req)
+  case route {
+    ["login"] -> {
+      wisp.response(501)
+    }
+    ["signup"] -> {
+      wisp.response(501)
+    }
+    _ -> wisp.not_found()
+  }
 }
 
 pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
