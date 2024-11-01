@@ -112,6 +112,6 @@ pub fn static_directory() -> String {
 fn database_name() -> String {
   case os.get_env("PRODUCTION_DATABASE") {
     Ok(path) -> path
-    Error(Nil) -> "./database.sqlite"
+    Error(Nil) -> "./dev.sqlite"
   }
 }
