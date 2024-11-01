@@ -1,9 +1,13 @@
-import app/router
-import app/web.{Context}
+import backend/auth
+import backend/router
+import backend/web.{Context}
 import gleam/erlang/os
 import gleam/erlang/process
 import gleam/http/request.{type Request}
 import gleam/http/response.{type Response}
+import gleam/int
+import gleam/list
+import gleam/result
 import gleam/string
 import mist
 import wisp
@@ -27,8 +31,8 @@ pub fn main() {
 }
 
 fn start_dev() {
-  let secret_key_base = wisp.random_string(64)
-  let ctx = Context(router.static_directory())
+  let secret_key_base = auth.get_secret()
+  let ctx = Context(static_directory())
 
   let assert Ok(result) =
     handler(router.handle_request(_, ctx), secret_key_base)
@@ -40,8 +44,8 @@ fn start_dev() {
 }
 
 fn start_prod() {
-  let secret_key_base = wisp.random_string(64)
-  let ctx = Context(router.static_directory())
+  let secret_key_base = auth.get_secret()
+  let ctx = Context(static_directory())
 
   let assert Ok(result) =
     handler(router.handle_request(_, ctx), secret_key_base)
@@ -55,6 +59,9 @@ fn start_prod() {
   result
 }
 
+/// NOTE(isaac): This is a very dumb way to log IPs, but I couldn't think of another way
+/// A wrapper that logs the IP of the incoming connection, and then passes it on 
+/// to the standard wisp infrastructure.
 fn handler(
   handler: fn(wisp.Request) -> wisp.Response,
   secret_key_base: String,
@@ -62,10 +69,31 @@ fn handler(
   let fun = wisp_mist.handler(handler, secret_key_base)
 
   fn(req: Request(_)) {
-    wisp.log_info(
-      "New Connection: " <> string.inspect(mist.get_client_info(req.body)),
-    )
+    let ip =
+      mist.get_client_info(req.body)
+      |> result.map(fn(x) { x.ip_address })
+      |> result.map(ip_to_string)
+
+    case ip {
+      Ok(val) -> wisp.log_info("New Connection: " <> val)
+      Error(e) -> wisp.log_alert("New Connection Failed: " <> string.inspect(e))
+    }
 
     fun(req)
   }
+}
+
+/// Convert an IP into a nicely formatted string
+fn ip_to_string(ip: mist.IpAddress) -> String {
+  case ip {
+    mist.IpV4(a, b, c, d) ->
+      [a, b, c, d] |> list.map(int.to_string) |> string.join(".")
+    mist.IpV6(a, b, c, d, e, f, g, h) ->
+      [a, b, c, d, e, f, g, h] |> list.map(int.to_string) |> string.join(":")
+  }
+}
+
+pub fn static_directory() -> String {
+  let assert Ok(priv_directory) = wisp.priv_directory("backend")
+  priv_directory <> "/static"
 }
