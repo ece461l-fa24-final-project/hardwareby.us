@@ -1,13 +1,11 @@
+import backend/db
+import backend/web
 import birl
 import gleam/erlang/os
 import gleam/result
 import gwt
 import simplifile
 import wisp
-
-pub type User {
-  User(userid: String, password: String)
-}
 
 pub fn generate_jwt(userid: String) -> String {
   let day_in_seconds = 86_400
@@ -43,4 +41,10 @@ pub fn get_secret() -> String {
       key
     }
   }
+}
+
+pub fn create_user(user: web.User, ctx: web.Context) -> wisp.Response {
+  db.create_user(ctx.db, user)
+  |> result.map(fn(_) { wisp.response(201) })
+  |> result.unwrap(wisp.bad_request())
 }

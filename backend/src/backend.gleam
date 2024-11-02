@@ -1,6 +1,7 @@
 import backend/auth
 import backend/db
 import backend/router
+import backend/web
 import gleam/erlang/os
 import gleam/erlang/process
 import gleam/http
@@ -24,7 +25,7 @@ pub fn main() {
   // Initialisation that is run per-request
   let make_context = fn() {
     let db = db.connect(database_name)
-    router.Context(db: db, static_directory: static_directory)
+    web.Context(db, static_directory)
   }
 
   let builder =

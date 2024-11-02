@@ -1,4 +1,5 @@
 import backend/db
+import backend/web.{type Context}
 import gleam/bit_array
 import gleam/bytes_builder
 import gleam/http
@@ -9,10 +10,6 @@ import gleam/string_builder
 import gzlib
 import simplifile
 import wisp
-
-pub type Context {
-  Context(db: db.Connection, static_directory: String)
-}
 
 pub fn handle_request(
   req: wisp.Request,
