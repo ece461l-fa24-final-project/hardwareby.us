@@ -90,6 +90,12 @@ pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
       wisp.response(501)
     }
     ["signup"] -> {
+      // XXX: We can potentiall have a GET method to check if a userid is available if needed
+      use <- wisp.require_method(req, http.Post)
+
+      use params <- get_required_query(req, ["userid", "password"])
+      let assert [userid, password] = params
+
       wisp.response(501)
     }
     _ -> wisp.bad_request()
