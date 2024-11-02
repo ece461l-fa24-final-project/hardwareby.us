@@ -18,7 +18,7 @@ fn generate_sql_queries_module() -> Nil {
 
   let imports = [
     "import sqlight", "import gleam/result", "import gleam/dynamic",
-    "import packages/error.{type Error}",
+    "import backend/error.{type Error}",
   ]
   let module =
     string.join(
