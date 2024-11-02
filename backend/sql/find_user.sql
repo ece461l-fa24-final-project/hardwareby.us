@@ -1,4 +1,4 @@
 SELECT password_hash 
 FROM users 
-WHERE userid = :userid 
+WHERE userid = $1
 LIMIT 1;

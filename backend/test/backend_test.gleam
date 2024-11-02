@@ -4,6 +4,7 @@ import backend/router
 import backend/web
 import gleeunit
 import gleeunit/should
+import wisp
 import wisp/testing
 
 pub fn main() {
@@ -14,6 +15,12 @@ fn with_database(f: fn(web.Connection) -> t) -> t {
   let db = db.connect(":memory:")
   let t = f(db)
   t
+}
+
+fn with_logger(testcase: fn() -> t) -> t {
+  wisp.configure_logger()
+
+  testcase()
 }
 
 fn with_context(testcase: fn(fn() -> web.Context) -> t) -> t {
@@ -38,6 +45,39 @@ pub fn get_home_page_test() {
 
   response.headers
   |> should.equal([#("content-type", "text/html; charset=utf-8")])
+}
+
+pub fn auth_api_create_user_test() {
+  use ctx <- with_context
+  use <- with_logger
+
+  // 1. Test that we can create a user
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+}
+
+pub fn auth_api_cant_create_duplicate_user_test() {
+  use ctx <- with_context
+
+  // 1. Test that we can create a user
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo1&password=bar1", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // 2. Test that we can't create an identical user
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo1&password=bar1", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(400)
 }
 
 pub fn auth_api_test() {

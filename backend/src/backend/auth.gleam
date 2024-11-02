@@ -3,6 +3,7 @@ import backend/web
 import birl
 import gleam/erlang/os
 import gleam/result
+import gleam/string
 import gwt
 import simplifile
 import wisp
@@ -46,5 +47,5 @@ pub fn get_secret() -> String {
 pub fn create_user(user: web.User, ctx: web.Context) -> wisp.Response {
   db.create_user(ctx.db, user)
   |> result.map(fn(_) { wisp.response(201) })
-  |> result.unwrap(wisp.bad_request())
+  |> result.unwrap(or: wisp.bad_request())
 }
