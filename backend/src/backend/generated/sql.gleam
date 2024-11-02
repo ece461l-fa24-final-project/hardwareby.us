@@ -30,3 +30,17 @@ COMMIT;"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }
+
+pub fn find_user(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "SELECT password_hash 
+FROM users 
+WHERE userid = :userid 
+LIMIT 1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
