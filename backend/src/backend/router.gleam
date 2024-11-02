@@ -1,4 +1,4 @@
-import backend/db
+import backend/auth
 import backend/web.{type Context}
 import gleam/bit_array
 import gleam/bytes_builder
@@ -84,7 +84,7 @@ pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
       use params <- get_required_query(req, ["userid", "password"])
       let assert [userid, password] = params
 
-      wisp.response(501)
+      auth.create_user(web.User(userid, password), ctx)
     }
     ["signup"] -> {
       // XXX: We can potentiall have a GET method to check if a userid is available if needed
