@@ -6,20 +6,26 @@ import UserForm from "../components/UserForm";
 export default function SignupView() {
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState(""); // State for error message
-    const [showErrorPopup, setShowErrorPopup] = useState(false); // State for popup visibility   
+    const [showErrorPopup, setShowErrorPopup] = useState(false); // State for popup visibility
 
     //Signup function to handle the user registration process
-    const onSubmit = async (userId: string, password: string): Promise<boolean> => {
+    const onSubmit = async (
+        userId: string,
+        password: string,
+    ): Promise<boolean> => {
         try {
             //API call to create a new account
-            const response = await fetch(`/api/v1/auth/signup?userid=${encodeURIComponent(userId)}&password=${encodeURIComponent(password)}`, {
-                method: "POST",
-            });
+            const response = await fetch(
+                `/api/v1/auth/signup?userid=${encodeURIComponent(userId)}&password=${encodeURIComponent(password)}`,
+                {
+                    method: "POST",
+                },
+            );
 
             //Check if signup was successful
-            if(response.ok){
+            if (response.ok) {
                 //if so navigate the user to login page
-                navigate("/login") 
+                navigate("/login");
                 return true;
             } else {
                 // Handle error response (e.g., user already exists)
@@ -29,7 +35,9 @@ export default function SignupView() {
             }
         } catch (error) {
             console.error("An error occurred during signup", error);
-            setErrorMessage("An unexpected error occurred. Please try again later.");
+            setErrorMessage(
+                "An unexpected error occurred. Please try again later.",
+            );
             setShowErrorPopup(true); // Show the error popup
             return false;
         }
