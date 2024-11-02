@@ -38,3 +38,34 @@ pub fn get_home_page_test() {
   response.headers
   |> should.equal([#("content-type", "text/html; charset=utf-8")])
 }
+
+pub fn auth_api_test() {
+  use ctx <- with_context
+
+  // 1. Test that we can create a user
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // 2. Test that we can't create an identical user
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar2", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(400)
+
+  // 3. Test that we can get an auth token when signing in
+  let request =
+    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  response.headers
+  |> should.equal([#("content-type", "application/json; charset=utf-8")])
+}
