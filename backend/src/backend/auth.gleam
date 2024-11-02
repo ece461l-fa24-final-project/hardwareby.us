@@ -1,10 +1,13 @@
 import birl
 import gleam/erlang/os
-import gleam/json
 import gleam/result
 import gwt
 import simplifile
 import wisp
+
+pub type User {
+  User(userid: String, password: String)
+}
 
 pub fn generate_jwt(userid: String) -> String {
   let day_in_seconds = 86_400
