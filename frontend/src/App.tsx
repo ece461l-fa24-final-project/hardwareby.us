@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/LoginView";
 import ProjectView from "./views/ProjectView";
 import AuthProvider from "./contexts/Auth.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 // import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 
@@ -21,8 +22,10 @@ export default function App() {
                     <Route
                         path="/projects"
                         element={
-
-                            <ProjectView />
+                            <ProtectedRoute>
+                                <ProjectView />
+                            </ProtectedRoute>
+                        
 
                         }
                     />
