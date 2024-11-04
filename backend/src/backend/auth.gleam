@@ -4,6 +4,7 @@ import birl
 import gleam/erlang/os
 import gleam/result
 import gleam/string
+import gleam/string_builder
 import gwt
 import simplifile
 import wisp
@@ -47,5 +48,19 @@ pub fn get_secret() -> String {
 pub fn create_user(user: web.User, ctx: web.Context) -> wisp.Response {
   db.create_user(ctx.db, user)
   |> result.map(fn(_) { wisp.response(201) })
+  |> result.unwrap(or: wisp.bad_request())
+}
+
+pub fn check_user(user: web.User, ctx: web.Context) -> wisp.Response {
+  db.check_user(ctx.db, user)
+  |> result.map(fn(valid: Bool) {
+    case valid {
+      False -> wisp.bad_request()
+      True ->
+        generate_jwt(user.userid)
+        |> string_builder.from_string
+        |> wisp.json_response(201)
+    }
+  })
   |> result.unwrap(or: wisp.bad_request())
 }

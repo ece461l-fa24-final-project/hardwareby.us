@@ -2,6 +2,7 @@ import backend/error.{type Error}
 import backend/generated/sql
 import backend/web
 import gleam/dynamic.{type DecodeError, type Dynamic, DecodeError} as dyn
+import gleam/http/request
 import gleam/result
 import gleam/string
 import simplifile
@@ -26,4 +27,12 @@ pub fn create_user(db: web.Connection, user: web.User) -> Result(Nil, Error) {
   use returned <- result.then(res)
   let assert [] = returned
   Ok(Nil)
+}
+
+pub fn check_user(db: web.Connection, user: web.User) -> Result(Bool, Error) {
+  let params = [sqlight.text(user.userid), sqlight.text(user.password)]
+  let res = sql.check_user(db.inner, params, sqlight.decode_bool)
+  use returned <- result.then(res)
+  let assert [status] = returned
+  Ok(status)
 }
