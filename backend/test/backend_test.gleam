@@ -81,6 +81,7 @@ pub fn auth_api_cant_create_duplicate_user_test() {
 
 pub fn auth_api_test() {
   use ctx <- with_context
+  // use <- with_logger
 
   // 1. Test that we can create a user
   let request =

@@ -122,6 +122,9 @@ fn get_required_query(
 
   case vals {
     Ok(params) -> next(params)
-    Error(_) -> wisp.bad_request()
+    Error(_) -> {
+      wisp.log_info("Invalid Query Param")
+      wisp.bad_request()
+    }
   }
 }
