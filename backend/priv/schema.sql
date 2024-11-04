@@ -7,9 +7,6 @@ create table if not exists users (
     password_hash text not null,
     created_at text not null default CURRENT_TIMESTAMP,
     last_login text
-    -- constraint username_format check (
-    --     userid REGEXP '^[a-zA-Z0-9_]{3,64}$'  -- Alphanumeric + underscore, 3-64 chars
-    -- )
 ) strict;
 
 -- Index for faster userid lookups during authentication
