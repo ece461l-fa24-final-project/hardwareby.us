@@ -49,7 +49,6 @@ pub fn get_home_page_test() {
 
 pub fn auth_api_create_user_test() {
   use ctx <- with_context
-  use <- with_logger
 
   // 1. Test that we can create a user
   let request =
