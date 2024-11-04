@@ -5,8 +5,8 @@
     "type": "module",
     "scripts": {
         "dev": "../scripts/build_backend && vite",
-        "build": "vite build && ../scripts/copy_frontend",
-        "lint": "eslint .",
+        "build": "tsc --noEmit && vite build && ../scripts/copy_frontend",
+        "lint": "tsc --noEmit && eslint .",
         "preview": "vite preview"
     },
     "dependencies": {
