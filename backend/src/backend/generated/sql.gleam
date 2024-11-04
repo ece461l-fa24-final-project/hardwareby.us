@@ -15,18 +15,8 @@ pub fn create_user(
   decoder: dynamic.Decoder(a),
 ) -> QueryResult(a) {
   let query =
-    "BEGIN TRANSACTION;
-
--- Attempt to insert the new user
-INSERT INTO users (userid, password_hash)
-VALUES 
-    (?, ?)
-ON CONFLICT(userid) DO
-    -- If userid exists, roll back the entire transaction
-    ROLLBACK;
-
--- If we get here, the insert succeeded
-COMMIT;"
+    "INSERT INTO users (userid, password_hash)
+    VALUES (?, ?)"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }

@@ -5,8 +5,8 @@ create table if not exists users (
     id integer primary key autoincrement,
     userid text not null unique,
     password_hash text not null,
-    created_at integer not null default CURRENT_TIMESTAMP,
-    last_login integer
+    created_at text not null default CURRENT_TIMESTAMP,
+    last_login text
     -- constraint username_format check (
     --     userid REGEXP '^[a-zA-Z0-9_]{3,64}$'  -- Alphanumeric + underscore, 3-64 chars
     -- )
