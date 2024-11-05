@@ -151,6 +151,56 @@ pub fn project_api_create_project_test() {
   response.status
   |> should.equal(201)
 }
+
+pub fn project_api_cant_create_identical_project_test() {
+  use ctx <- with_context
+  use <- with_logger
+
+  // need to create and log in user before we can test the project creation
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  let request =
+    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  response.headers
+  |> should.equal([#("content-type", "application/json; charset=utf-8")])
+
+  let assert wisp.Text(jwt) = response.body
+  let token = string_builder.to_string(jwt)
+
+  // now we can test creating the project
+  let request =
+    testing.post(
+      "/api/v1/project/foo?description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Test that we can't create an identical project
+  let request =
+    testing.post(
+      "/api/v1/project/99?description=foobar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(400)
+}
 // pub fn project_api_test() {
 //   use ctx <- with_context
 
