@@ -1,10 +1,10 @@
 // THIS FILE IS GENERATED. DO NOT EDIT.
 // Regenerate with `gleam run -m codegen`
 
-import sqlight
-import gleam/result
-import gleam/dynamic
 import backend/error.{type Error}
+import gleam/dynamic
+import gleam/result
+import sqlight
 
 pub type QueryResult(t) =
   Result(List(t), Error)
