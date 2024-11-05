@@ -1,8 +1,9 @@
 import backend/auth
+import backend/project
 import backend/web.{type Context}
 import gleam/bit_array
 import gleam/bytes_builder
-import gleam/http
+import gleam/http.{Get, Put}
 import gleam/list
 import gleam/result
 import gleam/string
@@ -100,7 +101,25 @@ pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
 }
 
 pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
-  wisp.response(501)
+  let assert ["api", "v1", "project", ..route] = wisp.path_segments(req)
+
+  case route {
+    [] -> {
+      case req.method {
+        Get -> {
+          wisp.response(501)
+        }
+        Put -> {
+          use params <- get_required_query(req, ["projectid"])
+          let assert [projectid] = params
+
+          project.create_project(projectid)
+        }
+        _ -> wisp.bad_request()
+      }
+    }
+    _ -> wisp.bad_request()
+  }
 }
 
 pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
