@@ -1,10 +1,10 @@
 // THIS FILE IS GENERATED. DO NOT EDIT.
 // Regenerate with `gleam run -m codegen`
 
-import backend/error.{type Error}
-import gleam/dynamic
-import gleam/result
 import sqlight
+import gleam/result
+import gleam/dynamic
+import backend/error.{type Error}
 
 pub type QueryResult(t) =
   Result(List(t), Error)
@@ -37,6 +37,25 @@ and exists (
     where userid = ?1
     and password_hash = ?2
 );"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn create_project(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters:
+-- ?1 - The projectid of the project
+-- ?2 - The userid of the user adding themselves to the project.
+
+INSERT INTO projects (projectid)
+VALUES (?1);
+
+INSERT INTO user_projects (userid, projectid)
+VALUES (?2, ?1);"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }

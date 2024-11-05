@@ -113,7 +113,7 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
           use params <- get_required_query(req, ["projectid"])
           let assert [projectid] = params
 
-          project.create_project(projectid)
+          project.create_project(projectid, "0", ctx)
         }
         _ -> wisp.bad_request()
       }
