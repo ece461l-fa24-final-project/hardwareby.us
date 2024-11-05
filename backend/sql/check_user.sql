@@ -10,7 +10,7 @@ from users
 where userid = ?1
 limit 1;
 
-If authentication succeeds, update last_login timestamp
+-- If authentication succeeds, update last_login timestamp
 update users 
 set last_login = CURRENT_TIMESTAMP
 where userid = ?1
