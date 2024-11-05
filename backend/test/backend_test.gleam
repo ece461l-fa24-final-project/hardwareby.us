@@ -110,3 +110,42 @@ pub fn auth_api_test() {
   response.headers
   |> should.equal([#("content-type", "application/json; charset=utf-8")])
 }
+
+pub fn project_api_test() {
+  use ctx <- with_context
+
+  // Test that we can create a project
+  let request = testing.post("/api/v1/project/99?description=foobar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Test that we can't create an identical project
+  let request = testing.post("/api/v1/project/99?description=foobar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(400)
+
+  // Test that we can get a project
+  let request = testing.get("/api/v1/project/99", [])
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Test that we can add a user to a project
+  let request = testing.put("/api/v1/project/99?userid=0", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Test that we can delete a project
+  let request = testing.delete("/api/v1/project/99", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+}
