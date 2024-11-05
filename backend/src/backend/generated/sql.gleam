@@ -9,6 +9,22 @@ import sqlight
 pub type QueryResult(t) =
   Result(List(t), Error)
 
+pub fn add_user_to_project(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters:
+-- ?1 - The projectid of the project
+-- ?2 - The userid of the user
+
+INSERT INTO user_projects (userid, projectid)
+VALUES (?2, ?1);"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
 pub fn check_user(
   db: sqlight.Connection,
   arguments: List(sqlight.Value),
@@ -50,13 +66,9 @@ pub fn create_project(
     "-- Parameters:
 -- ?1 - The projectid of the project
 -- ?2 - The description of the project.
--- ?3 - The userid of the user creating the project.
 
 INSERT INTO projects (projectid, description)
-VALUES (?1, ?2);
-
-INSERT INTO user_projects (userid, projectid)
-VALUES (?3, ?1);"
+VALUES (?1, ?2);"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }
