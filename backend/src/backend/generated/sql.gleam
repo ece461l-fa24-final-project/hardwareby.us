@@ -1,10 +1,10 @@
 // THIS FILE IS GENERATED. DO NOT EDIT.
 // Regenerate with `gleam run -m codegen`
 
-import sqlight
-import gleam/result
-import gleam/dynamic
 import backend/error.{type Error}
+import gleam/dynamic
+import gleam/result
+import sqlight
 
 pub type QueryResult(t) =
   Result(List(t), Error)
@@ -49,13 +49,14 @@ pub fn create_project(
   let query =
     "-- Parameters:
 -- ?1 - The projectid of the project
--- ?2 - The userid of the user adding themselves to the project.
+-- ?2 - The description of the project.
+-- ?3 - The userid of the user creating the project.
 
-INSERT INTO projects (projectid)
-VALUES (?1);
+INSERT INTO projects (projectid, description)
+VALUES (?1, ?2);
 
 INSERT INTO user_projects (userid, projectid)
-VALUES (?2, ?1);"
+VALUES (?3, ?1);"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }

@@ -3,7 +3,7 @@ import backend/project
 import backend/web.{type Context}
 import gleam/bit_array
 import gleam/bytes_builder
-import gleam/http.{Get, Put}
+import gleam/http.{Delete, Get, Post, Put}
 import gleam/list
 import gleam/result
 import gleam/string
@@ -105,15 +105,34 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
 
   case route {
     [] -> {
+      // List of projects the user has joined
+      use <- wisp.require_method(req, http.Get)
+      wisp.response(501)
+    }
+    [projectid] -> {
       case req.method {
         Get -> {
+          // Get details for a specific project
+          use <- wisp.require_method(req, http.Get)
           wisp.response(501)
         }
-        Put -> {
-          use params <- get_required_query(req, ["projectid"])
-          let assert [projectid] = params
+        Post -> {
+          // Create a new project
+          use <- wisp.require_method(req, http.Post)
+          use params <- get_required_query(req, ["description"])
+          let assert [description] = params
 
-          project.create_project(projectid, "0", ctx)
+          project.create_project(web.Project(projectid, description), "0", ctx)
+        }
+        Put -> {
+          // Add a user to a project
+          use <- wisp.require_method(req, http.Put)
+          wisp.response(501)
+        }
+        Delete -> {
+          // Delete a project (and associated user connections)
+          use <- wisp.require_method(req, http.Delete)
+          wisp.response(501)
         }
         _ -> wisp.bad_request()
       }

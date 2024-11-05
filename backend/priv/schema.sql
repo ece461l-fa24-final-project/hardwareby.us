@@ -15,7 +15,9 @@ create index if not exists idx_users_userid on users(userid);
 create table if not exists projects (
     id integer primary key autoincrement,
     projectid text not null unique,
-    created_at text not null default CURRENT_TIMESTAMP
+    description text,
+    created_at text not null default CURRENT_TIMESTAMP,
+    last_updated text
 ) strict;
 
 -- Index for faster project lookups during gets and user connections

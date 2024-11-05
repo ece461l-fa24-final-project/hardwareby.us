@@ -43,16 +43,20 @@ pub fn check_user(db: web.Connection, user: web.User) -> Result(Bool, Error) {
 
 pub fn create_project(
   db: web.Connection,
-  projectid: String,
+  project: web.Project,
   userid: String,
 ) -> Result(Nil, Error) {
-  let params = [sqlight.text(projectid), sqlight.text(userid)]
+  let params = [
+    sqlight.text(project.projectid),
+    sqlight.text(project.description),
+    sqlight.text(userid),
+  ]
   let decoder = fn(dyn: Dynamic) { Ok(Nil) }
   let res = sql.create_project(db.inner, params, decoder)
 
   wisp.log_info("DB create_project " <> string.inspect(res))
 
   use returned <- result.then(res)
-  let assert [status] = returned
+  let assert [] = returned
   Ok(Nil)
 }
