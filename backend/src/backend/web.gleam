@@ -22,10 +22,5 @@ pub type UserProject {
 }
 
 pub type HardwareSet {
-  HardwareSet(
-    projectid: String,
-    setname: String,
-    capacity: Int,
-    checked_out: Int,
-  )
+  HardwareSet(projectid: String, name: String, capacity: Int, available: Int)
 }

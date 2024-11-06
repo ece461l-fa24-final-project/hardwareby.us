@@ -155,14 +155,11 @@ pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
     [] -> {
       case req.method {
         Post -> {
-          use params <- get_required_query(req, [
-            "projectid", "setname", "capacity",
-          ])
-          let assert [projectid, setname, capacity] = params
-          let capacity = result.unwrap(int.parse(capacity), 0)
+          use params <- get_required_query(req, ["projectid", "name"])
+          let assert [projectid, name] = params
 
           hardware.create_hardware_set(
-            web.HardwareSet(projectid, setname, capacity, 0),
+            web.HardwareSet(projectid, name, 100, 100),
             jwt,
             ctx,
           )

@@ -75,7 +75,7 @@ pub fn create_hardware_set(
 ) -> Result(Nil, Error) {
   let params = [
     sqlight.text(hardware_set.projectid),
-    sqlight.text(hardware_set.setname),
+    sqlight.text(hardware_set.name),
     sqlight.int(hardware_set.capacity),
   ]
   let decoder = fn(dyn: Dynamic) { Ok(Nil) }

@@ -242,7 +242,7 @@ pub fn hardware_api_create_hardware_set_test() {
   // Create a new hardware set
   let request =
     testing.post(
-      "/api/v1/hardware?projectid=foo&setname=bar&capacity=250",
+      "/api/v1/hardware?projectid=foo&name=bar",
       [#("authorization", token)],
       "",
     )
