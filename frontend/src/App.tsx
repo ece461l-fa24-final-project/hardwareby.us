@@ -19,9 +19,9 @@ export default function App() {
                     <Route
                         path="/projects"
                         element={
-                            <ProtectedRoute>
+                            
                                 <ProjectView />
-                            </ProtectedRoute>
+                           
                         }
                     />
                 </Routes>

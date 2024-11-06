@@ -1,3 +1,5 @@
+import CreateProjectDialog from "../components/CreateProjectDialog";
+
 export default function ProjectView() {
-    return <>Project Management</>;
+    return <CreateProjectDialog/>;
 }

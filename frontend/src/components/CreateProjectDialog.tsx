@@ -18,34 +18,30 @@ function CreateProjectDialog() {
     const [error, setError] = useState<ErrorType>(ErrorType.None);
 
     const openDialog = () =>setIsDialogOpen(true);
-    const closeDialog = ()=> setIsDialogOpen(false);
+    const closeDialog = ()=> {
+        setIsDialogOpen(false);
+        setError(ErrorType.None);
+    }
 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(ErrorType.None);
+        
         try {
-            const response = await fetch(`/api/v1/project/${projectID}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: projectName,
-                    description: description,
-                }),
-            });
-
-            if (!response.ok) {
-                setError(ErrorType.ProjectCreationFailed);
-            } else {
-                closeDialog(); // Close dialog on successful creation
+            const response = await fetch(
+                `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`, 
+                {
+                    method: 'POST'
+                }
+            );
+            if(!response.ok){
+                setError(ErrorType.ProjectCreationFailed); 
             }
         } catch {
             setError(ErrorType.ProjectCreationFailed);
         }
-        
-        closeDialog(); 
+            
+        closeDialog();
     };
 
 
@@ -55,8 +51,6 @@ function CreateProjectDialog() {
         {!isDialogOpen && (
             <button onClick={openDialog}>Create New Project</button>
         )}
-
-        {/* Render dialog only if isDialogOpen is true */}
         {isDialogOpen && (
             <div>
                 <div className="dialog">
@@ -84,7 +78,7 @@ function CreateProjectDialog() {
                             required
                         />
                         <button className="button" type="button" onClick={closeDialog}>Cancel</button>
-                        <button className="button" type="submit">Create Project</button>
+                        <button className="button" type="submit" name = "submit">Create Project</button>
                     </form>
                 </div>
             </div>
