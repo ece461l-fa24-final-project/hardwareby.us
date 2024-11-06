@@ -27,5 +27,7 @@ create index if not exists idx_projects_projectid on projects(projectid);
 create table if not exists user_projects (
     userid text not null,
     projectid text not null,
+    foreign key (userid) references users(userid)
+    foreign key (projectid) references projects(projectid)
     primary key (userid, projectid)
 ) strict;

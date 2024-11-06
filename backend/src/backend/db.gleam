@@ -58,7 +58,19 @@ pub fn create_project(
   use returned <- result.then(res)
   let assert [] = returned
 
-  let params = [sqlight.text(project.projectid), sqlight.text(userid)]
+  let returned = join_project(db, project.projectid, userid)
+  let assert Ok(Nil) = returned
+
+  Ok(Nil)
+}
+
+pub fn join_project(
+  db: web.Connection,
+  projectid: String,
+  userid: String,
+) -> Result(Nil, Error) {
+  let decoder = fn(dyn: Dynamic) { Ok(Nil) }
+  let params = [sqlight.text(projectid), sqlight.text(userid)]
   let res = sql.add_user_to_project(db.inner, params, decoder)
 
   wisp.log_info("DB add_user_to_project " <> string.inspect(res))
