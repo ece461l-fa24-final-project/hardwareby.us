@@ -24,24 +24,27 @@ function CreateProjectDialog() {
     }
 
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
-        try {
-            const response = await fetch(
-                `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`, 
-                {
-                    method: 'POST'
+        const createProject = async() =>{
+            try {
+                const response = await fetch(
+                    `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`, 
+                    {
+                        method: 'POST'
+                    }
+                );
+                if(!response.ok){
+                    setError(ErrorType.ProjectCreationFailed); 
                 }
-            );
-            if(!response.ok){
-                setError(ErrorType.ProjectCreationFailed); 
+            } catch {
+                setError(ErrorType.ProjectCreationFailed);
             }
-        } catch {
-            setError(ErrorType.ProjectCreationFailed);
+                
+            closeDialog();
         }
-            
-        closeDialog();
+        createProject()
+        
     };
 
 
