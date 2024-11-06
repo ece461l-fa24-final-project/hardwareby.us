@@ -6,7 +6,6 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     background-color: aquamarine;
-    
 }
 
 h2 {
@@ -40,7 +39,6 @@ button {
     background-color: green;
     color: black;
     font-display: bold;
-
 }
 .button {
     width: 100%;
@@ -49,5 +47,4 @@ button {
     background-color: lightblue;
     color: black;
     font-display: bold;
-
 }
