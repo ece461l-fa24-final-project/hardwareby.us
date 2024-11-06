@@ -36,5 +36,7 @@ create table if not exists hardware_sets (
     setname text not null,
     capacity integer not null,
     checked_out integer default 0,
+    created_at text not null default CURRENT_TIMESTAMP,
+    last_updated text,
     foreign key (projectid) references projects(projectid)
 ) strict;
