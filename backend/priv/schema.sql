@@ -29,3 +29,12 @@ create table if not exists user_projects (
     projectid text not null,
     primary key (userid, projectid)
 ) strict;
+
+create table if not exists hardware_sets (
+    id integer primary key autoincrement,
+    projectid text not null,
+    setname text not null,
+    capacity integer not null,
+    checked_out integer default 0,
+    foreign key (projectid) references projects(projectid)
+) strict;
