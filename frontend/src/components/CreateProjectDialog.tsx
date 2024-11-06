@@ -6,6 +6,7 @@ enum ErrorType {
     None = '',
     ProjectCreationFailed = 'Failed to create project. Please try again.',
     InvalidInput = 'Invalid input. Please check your entries.',
+    Success = 'Project created successfully!'
 }
 
 
@@ -26,25 +27,22 @@ function CreateProjectDialog() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const createProject = async() =>{
-            try {
-                const response = await fetch(
-                    `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`, 
-                    {
-                        method: 'POST'
-                    }
-                );
-                if(!response.ok){
-                    setError(ErrorType.ProjectCreationFailed); 
+        try {
+            const response = await fetch(
+                `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`, 
+                {
+                    method: 'POST'
                 }
-            } catch {
-                setError(ErrorType.ProjectCreationFailed);
+            );
+            if (!response.ok) {
+                setError(ErrorType.ProjectCreationFailed); 
             }
-                
-            closeDialog();
+        } catch (err) {
+            console.log(err);
+            setError(ErrorType.ProjectCreationFailed);
         }
-        await createProject()
         
+        closeDialog();
     };
 
 
@@ -59,7 +57,10 @@ function CreateProjectDialog() {
                 <div className="dialog">
                     <h2>Create New Project</h2>
                     {error && <p className="error">{error}</p>}
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={(e: React.FormEvent) => {
+                        e.preventDefault();
+                        void handleSubmit(e);
+                    }}>
                         <input
                             type="text"
                             placeholder="Project Name"
