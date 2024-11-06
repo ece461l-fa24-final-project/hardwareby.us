@@ -8,10 +8,9 @@ enum ErrorType {
     InvalidInput = 'Invalid input. Please check your entries.',
 }
 
-interface CreateProjectDialogProps {}
 
 export default CreateProjectDialog;
-function CreateProjectDialog({}:CreateProjectDialogProps) {
+function CreateProjectDialog({}) {
     const[isDialogOpen, setIsDialogOpen] = useState(false);
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
@@ -25,16 +24,23 @@ function CreateProjectDialog({}:CreateProjectDialogProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(ErrorType.None);
-
-        try {
-            // await fetch POST /api/v1/project/:id/?name={projectName}&description={description};
-            closeDialog(); 
-        } catch (err) {
+        const response = await fetch(`/api/v1/project/${projectID}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: projectName,
+                description: description,
+            }),
+        });
+        if(!response.ok) {
             setError(ErrorType.ProjectCreationFailed);
         }
+        closeDialog(); 
     };
 
-    if (!open) return null; // Don't render anything if the dialog is not open
+    if (!open) return null; 
 
     return (
         <>
@@ -61,12 +67,14 @@ function CreateProjectDialog({}:CreateProjectDialogProps) {
                             placeholder="Description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
+                            required
                         />
                         <input
                             type="text"
                             placeholder="Project ID"
                             value={projectID}
                             onChange={(e) => setProjectID(e.target.value)}
+                            required
                         />
                         <button className="button" type="button" onClick={closeDialog}>Cancel</button>
                         <button className="button" type="submit">Create Project</button>
