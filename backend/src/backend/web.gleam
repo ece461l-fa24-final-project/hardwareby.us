@@ -5,10 +5,18 @@ pub type Context {
   Context(db: Connection, static_directory: String)
 }
 
+pub type Connection {
+  Connection(inner: sqlight.Connection)
+}
+
 pub type User {
   User(userid: String, password: String)
 }
 
-pub type Connection {
-  Connection(inner: sqlight.Connection)
+pub type Project {
+  Project(projectid: String, description: String)
+}
+
+pub type UserProject {
+  UserProject(userid: String, projectid: String)
 }
