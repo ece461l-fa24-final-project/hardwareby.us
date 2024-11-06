@@ -10,7 +10,7 @@ enum ErrorType {
 
 
 export default CreateProjectDialog;
-function CreateProjectDialog({}) {
+function CreateProjectDialog() {
     const[isDialogOpen, setIsDialogOpen] = useState(false);
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
@@ -24,23 +24,30 @@ function CreateProjectDialog({}) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(ErrorType.None);
-        const response = await fetch(`/api/v1/project/${projectID}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: projectName,
-                description: description,
-            }),
-        });
-        if(!response.ok) {
+        try {
+            const response = await fetch(`/api/v1/project/${projectID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: projectName,
+                    description: description,
+                }),
+            });
+
+            if (!response.ok) {
+                setError(ErrorType.ProjectCreationFailed);
+            } else {
+                closeDialog(); // Close dialog on successful creation
+            }
+        } catch {
             setError(ErrorType.ProjectCreationFailed);
         }
+        
         closeDialog(); 
     };
 
-    if (!open) return null; 
 
     return (
         <>
