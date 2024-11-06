@@ -24,7 +24,7 @@ function CreateProjectDialog() {
     }
 
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const createProject = async() =>{
             try {
@@ -43,7 +43,7 @@ function CreateProjectDialog() {
                 
             closeDialog();
         }
-        createProject()
+        await createProject()
         
     };
 
