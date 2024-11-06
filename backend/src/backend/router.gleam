@@ -1,12 +1,14 @@
 import backend/auth
+import backend/project
 import backend/web.{type Context}
 import gleam/bit_array
 import gleam/bytes_builder
-import gleam/http
+import gleam/http.{Delete, Get, Post, Put}
 import gleam/list
 import gleam/result
 import gleam/string
 import gleam/string_builder
+import gwt
 import gzlib
 import simplifile
 import wisp
@@ -99,10 +101,50 @@ pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
   }
 }
 
+// Priveledged API
 pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
-  wisp.response(501)
+  let assert ["api", "v1", "project", ..route] = wisp.path_segments(req)
+
+  use jwt <- get_required_auth(req)
+
+  case route {
+    [] -> {
+      // List of projects the user has joined
+      use <- wisp.require_method(req, http.Get)
+      wisp.response(501)
+    }
+    [projectid] -> {
+      case req.method {
+        // Get -> {
+        //   // Get details for a specific project
+        //   wisp.response(501)
+        // }
+        Post -> {
+          // Create a new project
+          use params <- get_required_query(req, ["description"])
+          let assert [description] = params
+
+          project.create_project(web.Project(projectid, description), jwt, ctx)
+        }
+        // Put -> {
+        //   // Add a user to a project
+        //   use <- wisp.require_method(req, http.Put)
+        //   wisp.response(501)
+        // }
+        // Delete -> {
+        //   // Delete a project (and associated user connections)
+        //   use <- wisp.require_method(req, http.Delete)
+        //   wisp.response(501)
+        // }
+        // XXX: Add other api calls later
+        _ -> wisp.method_not_allowed(allowed: [http.Post])
+      }
+    }
+    _ -> wisp.bad_request()
+  }
 }
 
+// Priveledged API
 pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
   wisp.response(501)
 }
@@ -126,5 +168,26 @@ fn get_required_query(
       wisp.log_info("Invalid Query Param")
       wisp.bad_request()
     }
+  }
+}
+
+/// Require the request to have a valid authorization header
+fn get_required_auth(
+  req: wisp.Request,
+  next: fn(gwt.Jwt(gwt.Verified)) -> wisp.Response,
+) -> wisp.Response {
+  let auth =
+    req.headers
+    |> list.key_find("authorization")
+    |> result.try(fn(jwt: String) {
+      gwt.from_signed_string(jwt, auth.get_secret())
+      |> result.map_error(fn(_) { Nil })
+    })
+
+  case auth {
+    Ok(jwt) -> {
+      next(jwt)
+    }
+    Error(_) -> wisp.response(401)
   }
 }
