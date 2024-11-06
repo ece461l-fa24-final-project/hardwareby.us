@@ -1,48 +1,41 @@
 import React, { useState } from 'react';
+
+
 import '../styles/CreateProjectDialog.css';
-import CreateProjectDialog from '../components/CreateProjectDialog'; // Import the CreateProjectDialog component
+import { useParams } from 'react-router';
 
 // Define an enum for error types
 enum ErrorType {
     None = '',
-    ProjectCreationFailed = 'Failed to create project. Please try again.',
-    InvalidInput = 'Invalid input. Please check your entries.',
+    PageOpen = 'Failed to open project-view. Please try again.',
+    HardwareError ='No hardware set found.'
 }
 
 
 const ProjectView = () => {
+    const {projectId, projectName, description} = useParams<{projectId: string; projectName: string; description:string}>();
     const [error, setError] = useState<ErrorType>(ErrorType.None);
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // State for dialog visibility
 
-    // Event handler for creating a project
-    const handleCreateProject = () => {
-        setIsDialogOpen(true); // Open the dialog
-    };
-
-    // Event handler for joining a project
-    const handleJoinProject = () => {
-        console.log('Joining project');
-        // You can add error handling and state updates here
-    };
+    // const handleJoinProject = () => {
+    //     console.log('Joining project');
+    //     // You can add error handling and state updates here
+    // };
 
     return (
         <div className="project-view">
             <h1>Project View</h1>
             <div>
-                <h2>Project List</h2>
+                <h2>Project Information</h2>
+                <p>Project ID: {projectId}</p> {/* Displaying projectId */}
+                <p>Project Name: {projectName}</p> {/* Displaying projectName */}
+                <p>Description: {description}</p> {/* Displaying description */}
             </div>
             <div>
-                <h2>Create New Project</h2>
-                <button type="button" onClick={handleCreateProject}>Create Project</button>
-                <CreateProjectDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+                <h2>Hardware Information</h2>
                 
-                <h2>Join An Existing Project</h2>
-                <button type="button" onClick={handleJoinProject}>Join a Project</button>
             </div>
            
             {error && <p className="error">{error}</p>}
-
-            
         </div>
     );
 }
