@@ -189,10 +189,10 @@ pub fn project_api_cant_create_identical_project_test() {
   response.status
   |> should.equal(201)
 
-  // Test that we can't create an identical project
+  // Test that we can't create a project with the same projectid
   let request =
     testing.post(
-      "/api/v1/project/99?description=foobar",
+      "/api/v1/project/foo?description=foo",
       [#("authorization", token)],
       "",
     )
