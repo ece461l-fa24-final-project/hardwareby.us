@@ -111,7 +111,7 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
     [] -> {
       // List of projects the user has joined
       use <- wisp.require_method(req, http.Get)
-      wisp.response(501)
+      project.get_projects(jwt, ctx)
     }
     [projectid] -> {
       case req.method {
