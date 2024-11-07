@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useAuth from "../hooks/Auth.tsx"
+import useAuth from "../hooks/Auth.tsx";
 import "../styles/CreateProjectDialog.css";
 
 // Define an enum for error types
@@ -10,8 +10,7 @@ enum ErrorType {
     Success = "Project created successfully!",
 }
 
-export default CreateProjectDialog;
-function CreateProjectDialog() {
+export default function CreateProjectDialog() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
@@ -33,8 +32,9 @@ function CreateProjectDialog() {
                 {
                     method: "POST",
                     headers: {
-                        Authorization: token?.data ? `Bearer ${token.data}` : '',
-
+                        Authorization: token?.data
+                            ? `Bearer ${token.data}`
+                            : "",
                     },
                 },
             );
@@ -57,43 +57,43 @@ function CreateProjectDialog() {
             )}
             {isDialogOpen && (
                 <div className="dialog">
-                        <h2>Create New Project</h2>
-                        {error && <p className="error">{error}</p>}
-                        <form onSubmit={(e: React.FormEvent) => {void handleSubmit(e);}}>
-                            <input
-                                type="text"
-                                placeholder="Project Name"
-                                value={projectName}
-                                onChange={(e) => setProjectName(e.target.value)}
-                                required
-                            />
-                            <textarea
-                                placeholder="Description"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Project ID"
-                                value={projectID}
-                                onChange={(e) => setProjectID(e.target.value)}
-                                required
-                            />
-                            <button
-                                className="button"
-                                type="button"
-                                onClick={closeDialog}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="button"
-                                type="submit"
-                                name="submit"
-                            >
-                                Create Project
-                            </button>
-                        </form>
+                    <h2>Create New Project</h2>
+                    {error && <p className="error">{error}</p>}
+                    <form
+                        onSubmit={(e: React.FormEvent) => {
+                            void handleSubmit(e);
+                        }}
+                    >
+                        <input
+                            type="text"
+                            placeholder="Project Name"
+                            value={projectName}
+                            onChange={(e) => setProjectName(e.target.value)}
+                            required
+                        />
+                        <textarea
+                            placeholder="Description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Project ID"
+                            value={projectID}
+                            onChange={(e) => setProjectID(e.target.value)}
+                            required
+                        />
+                        <button
+                            className="button"
+                            type="button"
+                            onClick={closeDialog}
+                        >
+                            Cancel
+                        </button>
+                        <button className="button" type="submit" name="submit">
+                            Create Project
+                        </button>
+                    </form>
                 </div>
             )}
         </>
