@@ -33,7 +33,8 @@ function CreateProjectDialog() {
                 {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: token?.data ? `Bearer ${token.data}` : '',
+
                     },
                 },
             );
