@@ -142,7 +142,7 @@ pub fn project_api_create_project_test() {
   // now we can test creating the project
   let request =
     testing.post(
-      "/api/v1/project/foo?description=bar",
+      "/api/v1/project/foo?name=Foo&description=bar",
       [#("authorization", token)],
       "",
     )
@@ -180,7 +180,7 @@ pub fn project_api_cant_create_identical_project_test() {
   // now we can test creating the project
   let request =
     testing.post(
-      "/api/v1/project/foo?description=bar",
+      "/api/v1/project/foo?name=Foo&description=bar",
       [#("authorization", token)],
       "",
     )
@@ -192,7 +192,7 @@ pub fn project_api_cant_create_identical_project_test() {
   // Test that we can't create a project with the same projectid
   let request =
     testing.post(
-      "/api/v1/project/foo?description=foo",
+      "/api/v1/project/foo?name=Foo&description=foo",
       [#("authorization", token)],
       "",
     )

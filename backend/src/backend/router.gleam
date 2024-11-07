@@ -121,10 +121,14 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
         // }
         Post -> {
           // Create a new project
-          use params <- get_required_query(req, ["description"])
-          let assert [description] = params
+          use params <- get_required_query(req, ["name", "description"])
+          let assert [name, description] = params
 
-          project.create_project(web.Project(projectid, description), jwt, ctx)
+          project.create_project(
+            web.Project(projectid, name, description),
+            jwt,
+            ctx,
+          )
         }
         // Put -> {
         //   // Add a user to a project

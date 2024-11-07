@@ -65,10 +65,11 @@ pub fn create_project(
   let query =
     "-- Parameters:
 -- ?1 - The projectid of the project
--- ?2 - The description of the project.
+-- ?2 - The display name of the project
+-- ?3 - The description of the project.
 
-INSERT INTO projects (projectid, description)
-VALUES (?1, ?2);"
+INSERT INTO projects (projectid, name, description)
+VALUES (?1, ?2, ?3);"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }

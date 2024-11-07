@@ -48,6 +48,7 @@ pub fn create_project(
 ) -> Result(Nil, Error) {
   let params = [
     sqlight.text(project.projectid),
+    sqlight.text(project.name),
     sqlight.text(project.description),
   ]
   let decoder = fn(dyn: Dynamic) { Ok(Nil) }

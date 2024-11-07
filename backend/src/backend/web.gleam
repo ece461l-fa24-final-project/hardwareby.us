@@ -14,7 +14,7 @@ pub type User {
 }
 
 pub type Project {
-  Project(projectid: String, description: String)
+  Project(projectid: String, name: String, description: String)
 }
 
 pub type UserProject {
