@@ -13,8 +13,15 @@ enum ErrorType {
 
 
 const ProjectView = () => {
-    const {projectId, projectName, description} = useParams<{projectId: string; projectName: string; description:string}>();
+    const {projectId} = useParams<{projectId: string}>();
+    const [projectName, setProjectName] = useState('');
+    const [description, setDescription] = useState('');
     const [error, setError] = useState<ErrorType>(ErrorType.None);
+
+
+    const getProjectDetails = () =>{
+        
+    }
 
     // const handleJoinProject = () => {
     //     console.log('Joining project');
