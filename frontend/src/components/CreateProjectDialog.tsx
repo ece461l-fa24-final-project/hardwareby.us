@@ -33,7 +33,7 @@ function CreateProjectDialog() {
                 {
                     method: "POST",
                     headers: {
-                        Authorization: 'Bearer ${token}',
+                        Authorization: `Bearer ${token}`,
                     },
                 },
             );
@@ -55,16 +55,10 @@ function CreateProjectDialog() {
                 <button onClick={openDialog}>Create New Project</button>
             )}
             {isDialogOpen && (
-                <div>
-                    <div className="dialog">
+                <div className="dialog">
                         <h2>Create New Project</h2>
                         {error && <p className="error">{error}</p>}
-                        <form
-                            onSubmit={(e: React.FormEvent) => {
-                                e.preventDefault();
-                                void handleSubmit(e);
-                            }}
-                        >
+                        <form onSubmit={(e: React.FormEvent) => {void handleSubmit(e);}}>
                             <input
                                 type="text"
                                 placeholder="Project Name"
@@ -99,7 +93,6 @@ function CreateProjectDialog() {
                                 Create Project
                             </button>
                         </form>
-                    </div>
                 </div>
             )}
         </>
