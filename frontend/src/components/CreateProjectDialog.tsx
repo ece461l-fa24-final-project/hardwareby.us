@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useAuth from "../hooks/Auth.tsx"
 import "../styles/CreateProjectDialog.css";
 
 // Define an enum for error types
@@ -15,6 +16,7 @@ function CreateProjectDialog() {
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
     const [projectID, setProjectID] = useState("");
+    const { token } = useAuth();
     const [error, setError] = useState<ErrorType>(ErrorType.None);
 
     const openDialog = () => setIsDialogOpen(true);
@@ -30,6 +32,9 @@ function CreateProjectDialog() {
                 `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`,
                 {
                     method: "POST",
+                    headers: {
+                        Authorization: 'Bearer ${token}',
+                    },
                 },
             );
             if (!response.ok) {
@@ -71,7 +76,6 @@ function CreateProjectDialog() {
                                 placeholder="Description"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                required
                             />
                             <input
                                 type="text"
