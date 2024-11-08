@@ -43,6 +43,24 @@ h1 {
     text-align: center;
 }
 
+input[type="text"],
+textarea {
+    width: 90%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #0d0c0c;
+    border-radius: 4px;
+}
+
+input[type="password"],
+textarea {
+    width: 90%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #0d0c0c;
+    border-radius: 4px;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;

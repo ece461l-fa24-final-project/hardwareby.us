@@ -35,7 +35,7 @@ export default function ProjectList() {
     return (
         <div className="existing-projects-list">
             <h2 className="existing-projects-header">Existing Projects</h2>
-            <ul>
+            <ul style={{listStyle: "none"}}>
                 {projects.map((project) => (
                     <li key={project.projectid} className="project-card">
                         <h3>{project.name}</h3>
