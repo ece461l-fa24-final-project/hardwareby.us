@@ -24,29 +24,31 @@ export default function CreateProjectDialog() {
         setError(ErrorType.None);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            const response = await fetch(
-                `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`,
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: token?.data
-                            ? `Bearer ${token.data}`
-                            : "",
-                    },
+        fetch(
+            `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: token?.data
+                        ? `Bearer ${token.data}`
+                        : "",
                 },
-            );
+            },
+        )
+        .then(response => {
             if (!response.ok) {
                 setError(ErrorType.ProjectCreationFailed);
             }
-        } catch (err) {
+        })
+        .catch(err => {
             console.log(err);
             setError(ErrorType.ProjectCreationFailed);
-        }
-
-        closeDialog();
+        })
+        .finally(() => {
+            closeDialog();
+        });
     };
 
     return (
