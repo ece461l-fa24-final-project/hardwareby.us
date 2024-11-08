@@ -1,5 +1,7 @@
 #!/bin/sh
 
-set -e
-
-rm -r ../backend/priv/static && mkdir -p ../backend/priv/static && cp -r ./dist/* ../backend/priv/static
+mkdir -p ../backend/priv/static || exit 1
+touch ../backend/priv/static/.gitkeep || exit 1
+rm ../backend/priv/static/index.html
+rm -r ../backend/priv/static/assets
+cp -r ./dist/* ../backend/priv/static || exit 1
