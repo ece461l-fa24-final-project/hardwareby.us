@@ -18,7 +18,7 @@ export default function CreateProjectDialog() {
     const { token } = useAuth();
     const [error, setError] = useState<ErrorType>(ErrorType.None);
 
-    const openDialog = () => setIsDialogOpen(true);
+    const openDialog = () => {setIsDialogOpen(true)};
     const closeDialog = () => {
         setIsDialogOpen(false);
         setError(ErrorType.None);
@@ -31,7 +31,7 @@ export default function CreateProjectDialog() {
             {
                 method: "POST",
                 headers: {
-                    Authorization: token?.data ? `Bearer ${token.data}` : "",
+                    Authorization: token?.data ? `${token.data}` : "",
                 },
             },
         )

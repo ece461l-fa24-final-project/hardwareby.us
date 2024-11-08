@@ -3,14 +3,11 @@
     padding: 0;
 }
 
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100vw;
+.container {
     display: flex;
-    padding: 1rem 2rem;
-    background-color: orange;
-    color: white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .nav-hardwarelogo {
@@ -48,11 +45,7 @@
 
 .create-new-proj {
     padding: 5rem;
-    position: absolute;
-    width: 90%;
-    top: 40rem;
-    display: flex;
-    justify-content: center;
+    width: 50%;
 }
 
 .create-new-proj a {
@@ -60,9 +53,8 @@
 }
 
 .project-list-div {
-    position: absolute;
-    top: 5.5rem;
-    width: 90%;
+    padding-top: 5.5rem;
+    width: 50%;
     display: flex;
     justify-content: center;
 }
