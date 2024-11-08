@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import useAuth from "../hooks/Auth.tsx";
 import "../styles/ProjectList.css";
 
-type Project = {
+interface Project {
     projectid: string;
     name: string;
     description: string;
@@ -11,8 +11,8 @@ type Project = {
 const initialState: Project[] = [];
 
 export default function ProjectList() {
-    let [projects, setProjects] = useState(initialState);
-    let { token } = useAuth();
+    const [projects, setProjects] = useState<Project[]>(initialState);
+    const { token } = useAuth();
 
     useEffect(() => {
         fetch(`/api/v1/project/`, {
@@ -22,7 +22,7 @@ export default function ProjectList() {
             },
         })
             .then((response) => response.json())
-            .then((data) => setProjects(data))
+            .then((data) => setProjects(data as Project[]))
             .catch((err) => console.log(err));
     });
 
