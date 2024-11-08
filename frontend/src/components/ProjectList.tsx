@@ -24,13 +24,12 @@ export default function ProjectList() {
         })
             .then((response) => response.json())
             .then((data) => {
-                if(!fetched)
-                    setProjects(data as Project[])
+                if (!fetched) setProjects(data as Project[]);
             })
             .catch((err) => console.log(err));
-            return () => {
-                fetched = true;
-            }
+        return () => {
+            fetched = true;
+        };
     }, []);
 
     return (
