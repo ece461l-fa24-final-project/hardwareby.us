@@ -31,24 +31,22 @@ export default function CreateProjectDialog() {
             {
                 method: "POST",
                 headers: {
-                    Authorization: token?.data
-                        ? `Bearer ${token.data}`
-                        : "",
+                    Authorization: token?.data ? `Bearer ${token.data}` : "",
                 },
             },
         )
-        .then(response => {
-            if (!response.ok) {
+            .then((response) => {
+                if (!response.ok) {
+                    setError(ErrorType.ProjectCreationFailed);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
                 setError(ErrorType.ProjectCreationFailed);
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            setError(ErrorType.ProjectCreationFailed);
-        })
-        .finally(() => {
-            closeDialog();
-        });
+            })
+            .finally(() => {
+                closeDialog();
+            });
     };
 
     return (
