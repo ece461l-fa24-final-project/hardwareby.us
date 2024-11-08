@@ -202,6 +202,56 @@ pub fn project_api_cant_create_identical_project_test() {
   |> should.equal(400)
 }
 
+pub fn hardware_api_create_hardware_set_test() {
+  use ctx <- with_context
+  use <- with_logger
+
+  // Create user for JWT
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  let request =
+    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  response.headers
+  |> should.equal([#("content-type", "application/json; charset=utf-8")])
+
+  let assert wisp.Text(jwt) = response.body
+  let token = string_builder.to_string(jwt)
+
+  // Create project so we can create a set
+  let request =
+    testing.post(
+      "/api/v1/project/foo?description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a new hardware set
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=foo&name=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+}
+
 pub fn project_api_join_project_test() {
   use ctx <- with_context
   use <- with_logger
