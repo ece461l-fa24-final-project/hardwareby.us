@@ -33,7 +33,7 @@ export default function CreateProjectDialog() {
             {
                 method: "POST",
                 headers: {
-                    Authorization: token?.data ? `${token.data}` : "",
+                    Authorization: token?.data ? `Bearer ${token.data}` : "",
                 },
             },
         )

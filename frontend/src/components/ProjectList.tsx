@@ -19,7 +19,7 @@ export default function ProjectList() {
         fetch(`/api/v1/project/`, {
             method: "GET",
             headers: {
-                Authorization: token?.data ? `${token.data}` : "",
+                Authorization: token?.data ? `Bearer ${token.data}` : "",
             },
         })
             .then((response) => response.json())
