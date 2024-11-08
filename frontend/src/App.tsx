@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import LoginView from "./views/LoginView";
-import ProjectView from "./views/ProjectView";
+import LoginView from "./views/LoginView.tsx";
+import ProjectView from "./views/ProjectView.tsx";
 import AuthProvider from "./contexts/Auth.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import SignupView from "./views/SignupView.tsx";
