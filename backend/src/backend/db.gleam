@@ -48,6 +48,7 @@ pub fn create_project(
 ) -> Result(Nil, Error) {
   let params = [
     sqlight.text(project.projectid),
+    sqlight.text(project.name),
     sqlight.text(project.description),
   ]
   let decoder = fn(dyn: Dynamic) { Ok(Nil) }
@@ -79,6 +80,26 @@ pub fn join_project(
   let assert [] = returned
 
   Ok(Nil)
+}
+
+pub fn get_projects(
+  db: web.Connection,
+  userid: String,
+) -> Result(List(web.Project), Error) {
+  let decoder =
+    dyn.decode3(
+      web.Project,
+      dyn.element(0, dyn.string),
+      dyn.element(1, dyn.string),
+      dyn.element(2, dyn.string),
+    )
+  let params = [sqlight.text(userid)]
+  let res = sql.get_projects(db.inner, params, decoder)
+
+  wisp.log_info("DB get_projects " <> string.inspect(res))
+
+  use returned <- result.then(res)
+  Ok(returned)
 }
 
 pub fn create_hardware_set(

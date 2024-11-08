@@ -7,6 +7,7 @@ import gleam/bytes_builder
 import gleam/http.{Delete, Get, Post, Put}
 import gleam/int
 import gleam/list
+import gleam/order
 import gleam/result
 import gleam/string
 import gleam/string_builder
@@ -113,7 +114,7 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
     [] -> {
       // List of projects the user has joined
       use <- wisp.require_method(req, http.Get)
-      wisp.response(501)
+      project.get_projects(jwt, ctx)
     }
     [projectid] -> {
       case req.method {
@@ -123,10 +124,14 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
         // }
         Post -> {
           // Create a new project
-          use params <- get_required_query(req, ["description"])
-          let assert [description] = params
+          use params <- get_required_query(req, ["name", "description"])
+          let assert [name, description] = params
 
-          project.create_project(web.Project(projectid, description), jwt, ctx)
+          project.create_project(
+            web.Project(projectid, name, description),
+            jwt,
+            ctx,
+          )
         }
         Put -> {
           // Add calling user to a project
@@ -200,6 +205,7 @@ fn get_required_auth(
   let auth =
     req.headers
     |> list.key_find("authorization")
+    |> result.try(get_required_auth_type)
     |> result.try(fn(jwt: String) {
       gwt.from_signed_string(jwt, auth.get_secret())
       |> result.map_error(fn(_) { Nil })
@@ -210,5 +216,17 @@ fn get_required_auth(
       next(jwt)
     }
     Error(_) -> wisp.response(401)
+  }
+}
+
+fn get_required_auth_type(header: String) -> Result(String, Nil) {
+  case string.split_once(header, " ") {
+    Error(_) -> Error(Nil)
+    Ok(#(auth, token)) -> {
+      case string.compare(auth, "Bearer") {
+        order.Eq -> Ok(token)
+        _ -> Error(Nil)
+      }
+    }
   }
 }

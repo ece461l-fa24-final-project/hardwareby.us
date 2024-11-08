@@ -6,14 +6,14 @@ import CreateProjectDialog from "../components/CreateProjectDialog";
 export default function ProjectView() {
     return (
         <>
-            <body>
+            <div className="container">
                 <div className="project-list-div">
                     <ProjectList />
                 </div>
                 <div className="create-new-proj">
                     <CreateProjectDialog />
                 </div>
-            </body>
+            </div>
         </>
     );
 }

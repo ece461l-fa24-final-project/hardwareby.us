@@ -82,10 +82,11 @@ pub fn create_project(
   let query =
     "-- Parameters:
 -- ?1 - The projectid of the project
--- ?2 - The description of the project.
+-- ?2 - The display name of the project
+-- ?3 - The description of the project.
 
-INSERT INTO projects (projectid, description)
-VALUES (?1, ?2);"
+INSERT INTO projects (projectid, name, description)
+VALUES (?1, ?2, ?3);"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }
@@ -98,6 +99,23 @@ pub fn create_user(
   let query =
     "INSERT INTO users (userid, password_hash)
 VALUES (?, ?)"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn get_projects(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters
+-- ?1 - The userid of the user to get projects for
+
+SELECT p.projectid, p.name, p.description
+FROM projects p
+INNER JOIN user_projects up on p.projectid = up.projectid
+WHERE up.userid = ?1;"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }
