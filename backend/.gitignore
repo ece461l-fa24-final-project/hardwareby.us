@@ -5,3 +5,6 @@
 erl_crash.dump
 
 priv/static/*
+
+*.sqlite
+*.db
