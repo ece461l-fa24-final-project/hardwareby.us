@@ -1,10 +1,7 @@
 import backend/db
 import backend/web
-import gleam/io
-import gleam/json
-import gleam/list
+import gleam/json.{type Json}
 import gleam/result
-import gleam/string_builder
 import gwt
 import wisp
 
@@ -29,27 +26,26 @@ pub fn get_projects(
   ctx: web.Context,
 ) -> wisp.Response {
   let mapper = fn(userid: String) {
-    let builder = string_builder.from_string("{\n\t")
     db.get_projects(ctx.db, userid)
     |> result.map(fn(projects: List(web.Project)) {
-      list.each(projects, fn(project: web.Project) {
-        let builder =
-          string_builder.append(
-            builder,
-            json.to_string(
-              json.object([
-                #("projectid", json.string(project.projectid)),
-                #("name", json.string(project.name)),
-                #("description", json.string(project.description)),
-              ]),
-            ),
-          )
+      json.array(from: projects, of: fn(project: web.Project) -> Json {
+        json.object([
+          #("projectid", json.string(project.projectid)),
+          #("name", json.string(project.name)),
+          #("description", json.string(project.description)),
+        ])
       })
-      let builder = string_builder.append(builder, "}")
-      wisp.response(201)
-      |> wisp.string_body(string_builder.to_string(builder))
     })
-    |> result.unwrap(or: wisp.bad_request())
+    |> result.unwrap(
+      or: json.object([
+        #(
+          "error",
+          json.string("An error occured while processing your request."),
+        ),
+      ]),
+    )
+    |> json.to_string_builder
+    |> wisp.json_response(200)
   }
 
   gwt.get_subject(jwt)

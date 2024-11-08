@@ -3,6 +3,7 @@ import backend/db
 import backend/router
 import backend/web
 import gleam/io
+import gleam/json.{type Json}
 import gleam/string_builder
 import gleeunit
 import gleeunit/should
@@ -200,6 +201,78 @@ pub fn project_api_cant_create_identical_project_test() {
 
   response.status
   |> should.equal(400)
+}
+
+pub fn project_api_get_projects_test() {
+  use ctx <- with_context
+  use <- with_logger
+
+  // Login for authorization
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  let request =
+    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  response.headers
+  |> should.equal([#("content-type", "application/json; charset=utf-8")])
+
+  let assert wisp.Text(jwt) = response.body
+  let token = string_builder.to_string(jwt)
+
+  // Create a project
+  let request =
+    testing.post(
+      "/api/v1/project/foo?name=Foo&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a second project
+  let request =
+    testing.post(
+      "/api/v1/project/bar?name=Bar&description=foo",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Get projects
+  let request = testing.get("/api/v1/project", [#("authorization", token)])
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(200)
+
+  response.body
+  |> should.equal(wisp.Text(
+    json.array(
+      from: [web.Project("bar", "Bar", "foo"), web.Project("foo", "Foo", "bar")],
+      of: fn(project: web.Project) -> Json {
+        json.object([
+          #("projectid", json.string(project.projectid)),
+          #("name", json.string(project.name)),
+          #("description", json.string(project.description)),
+        ])
+      },
+    )
+    |> json.to_string_builder,
+  ))
 }
 // pub fn project_api_test() {
 //   use ctx <- with_context
