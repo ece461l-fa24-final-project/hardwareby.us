@@ -1,9 +1,11 @@
 import backend/auth
+import backend/hardware
 import backend/project
 import backend/web.{type Context}
 import gleam/bit_array
 import gleam/bytes_builder
 import gleam/http.{Delete, Get, Post, Put}
+import gleam/int
 import gleam/list
 import gleam/result
 import gleam/string
@@ -101,7 +103,7 @@ pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
   }
 }
 
-// Priveledged API
+// Privileged API
 pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
   let assert ["api", "v1", "project", ..route] = wisp.path_segments(req)
 
@@ -130,11 +132,10 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
             ctx,
           )
         }
-        // Put -> {
-        //   // Add a user to a project
-        //   use <- wisp.require_method(req, http.Put)
-        //   wisp.response(501)
-        // }
+        Put -> {
+          // Add calling user to a project
+          project.join_project(projectid, jwt, ctx)
+        }
         // Delete -> {
         //   // Delete a project (and associated user connections)
         //   use <- wisp.require_method(req, http.Delete)
@@ -148,9 +149,29 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
   }
 }
 
-// Priveledged API
+// Privileged API
 pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
-  wisp.response(501)
+  let assert ["api", "v1", "hardware", ..route] = wisp.path_segments(req)
+  use jwt <- get_required_auth(req)
+
+  case route {
+    [] -> {
+      case req.method {
+        Post -> {
+          use params <- get_required_query(req, ["projectid", "name"])
+          let assert [projectid, name] = params
+
+          hardware.create_hardware_set(
+            web.HardwareSet(projectid, name, 100, 100),
+            jwt,
+            ctx,
+          )
+        }
+        _ -> wisp.method_not_allowed(allowed: [http.Post])
+      }
+    }
+    _ -> wisp.bad_request()
+  }
 }
 
 fn get_required_query(

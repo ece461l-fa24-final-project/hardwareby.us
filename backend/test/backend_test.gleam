@@ -203,6 +203,139 @@ pub fn project_api_cant_create_identical_project_test() {
   |> should.equal(400)
 }
 
+pub fn hardware_api_create_hardware_set_test() {
+  use ctx <- with_context
+  use <- with_logger
+
+  // Create user for JWT
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  let request =
+    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  response.headers
+  |> should.equal([#("content-type", "application/json; charset=utf-8")])
+
+  let assert wisp.Text(jwt) = response.body
+  let token = string_builder.to_string(jwt)
+
+  // Create project so we can create a set
+  let request =
+    testing.post(
+      "/api/v1/project/foo?name=Foo&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a new hardware set
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=foo&name=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+}
+
+pub fn project_api_join_project_test() {
+  use ctx <- with_context
+  use <- with_logger
+
+  // need to create and log in user before we can test the project creation
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  let request =
+    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  response.headers
+  |> should.equal([#("content-type", "application/json; charset=utf-8")])
+
+  let assert wisp.Text(jwt) = response.body
+  let token = string_builder.to_string(jwt)
+
+  // Create a test project which we'll be automatically added to.
+  let request =
+    testing.post(
+      "/api/v1/project/foo?name=Foo&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Try joining the same project, which should fail
+  let request =
+    testing.put("/api/v1/project/foo", [#("authorization", token)], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(400)
+
+  // Try joining a non existent project, which should fail
+  let request =
+    testing.put("/api/v1/project/bar", [#("authorization", token)], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(400)
+
+  // New user to join an existing project
+  let request =
+    testing.post("/api/v1/auth/signup?userid=bar&password=foo", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  let request =
+    testing.post("/api/v1/auth/login?userid=bar&password=foo", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  response.headers
+  |> should.equal([#("content-type", "application/json; charset=utf-8")])
+
+  let assert wisp.Text(jwt) = response.body
+  let token = string_builder.to_string(jwt)
+
+  // Try joining an existing project as a new user.
+  let request =
+    testing.put("/api/v1/project/foo", [#("authorization", token)], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+}
+
 pub fn project_api_get_projects_test() {
   use ctx <- with_context
   use <- with_logger
@@ -274,41 +407,3 @@ pub fn project_api_get_projects_test() {
     |> json.to_string_builder,
   ))
 }
-// pub fn project_api_test() {
-//   use ctx <- with_context
-
-//   // Test that we can create a project
-//   let request = testing.post("/api/v1/project/99?description=foobar", [], "")
-//   let response = router.handle_request(request, ctx)
-
-//   response.status
-//   |> should.equal(201)
-
-//   // Test that we can't create an identical project
-//   let request = testing.post("/api/v1/project/99?description=foobar", [], "")
-//   let response = router.handle_request(request, ctx)
-
-//   response.status
-//   |> should.equal(400)
-
-//   // Test that we can get a project
-//   let request = testing.get("/api/v1/project/99", [])
-//   let response = router.handle_request(request, ctx)
-
-//   response.status
-//   |> should.equal(201)
-
-//   // Test that we can add a user to a project
-//   let request = testing.put("/api/v1/project/99?userid=0", [], "")
-//   let response = router.handle_request(request, ctx)
-
-//   response.status
-//   |> should.equal(201)
-
-//   // Test that we can delete a project
-//   let request = testing.delete("/api/v1/project/99", [], "")
-//   let response = router.handle_request(request, ctx)
-
-//   response.status
-//   |> should.equal(201)
-// }

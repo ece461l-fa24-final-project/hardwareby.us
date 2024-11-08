@@ -59,7 +59,19 @@ pub fn create_project(
   use returned <- result.then(res)
   let assert [] = returned
 
-  let params = [sqlight.text(project.projectid), sqlight.text(userid)]
+  let returned = join_project(db, project.projectid, userid)
+  let assert Ok(Nil) = returned
+
+  Ok(Nil)
+}
+
+pub fn join_project(
+  db: web.Connection,
+  projectid: String,
+  userid: String,
+) -> Result(Nil, Error) {
+  let decoder = fn(dyn: Dynamic) { Ok(Nil) }
+  let params = [sqlight.text(projectid), sqlight.text(userid)]
   let res = sql.add_user_to_project(db.inner, params, decoder)
 
   wisp.log_info("DB add_user_to_project " <> string.inspect(res))
@@ -88,4 +100,24 @@ pub fn get_projects(
 
   use returned <- result.then(res)
   Ok(returned)
+}
+
+pub fn create_hardware_set(
+  db: web.Connection,
+  hardware_set: web.HardwareSet,
+) -> Result(Nil, Error) {
+  let params = [
+    sqlight.text(hardware_set.projectid),
+    sqlight.text(hardware_set.name),
+    sqlight.int(hardware_set.capacity),
+  ]
+  let decoder = fn(dyn: Dynamic) { Ok(Nil) }
+  let res = sql.create_hardware_set(db.inner, params, decoder)
+
+  wisp.log_info("DB create_hardware_set " <> string.inspect(res))
+
+  use returned <- result.then(res)
+  let assert [] = returned
+
+  Ok(Nil)
 }

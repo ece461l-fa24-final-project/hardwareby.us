@@ -20,3 +20,7 @@ pub type Project {
 pub type UserProject {
   UserProject(userid: String, projectid: String)
 }
+
+pub type HardwareSet {
+  HardwareSet(projectid: String, name: String, capacity: Int, available: Int)
+}
