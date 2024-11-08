@@ -1,0 +1,94 @@
+
+
+.body{
+  width: 100%;
+  height: 4000px;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 60rem;
+  
+}
+.navbar{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    display: flex;
+    padding: 0rem 2rem;
+    background-color: orange;
+    color: white;
+    
+}
+
+.nav-hardwarelogo {
+  font-size: 1.5rem;
+  color: white;
+  text-decoration: none;
+  background-color: orange;
+}
+
+.nav-links {
+  list-style: none;
+  background-color: orange;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links li {
+background-color: orange;
+  font-size: 1rem;
+}
+
+.nav-links a {
+  background-color: orange;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: white;
+}
+
+.nav-hardwarelogo:hover {
+  color: white;
+}
+
+.createNewProj {
+    padding: 5rem;
+    background-color: #f9f9f9;
+    position: absolute;
+    width: 100%;  
+    top: 57rem;  
+    display: flex; 
+    justify-content: center;  
+  }
+  
+  .createNewProj a {
+    text-align: center;
+  }
+
+
+  .projectListDiv {
+    background-color: #f9f9f9;
+    position: absolute;
+    top: 5.5rem;  
+    width: 100%;
+    display: flex; 
+    justify-content: center;  
+  }
+  
+
+.createNewProj button {
+
+  padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    background-color: orange;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
