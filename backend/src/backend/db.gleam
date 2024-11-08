@@ -68,3 +68,23 @@ pub fn create_project(
 
   Ok(Nil)
 }
+
+pub fn create_hardware_set(
+  db: web.Connection,
+  hardware_set: web.HardwareSet,
+) -> Result(Nil, Error) {
+  let params = [
+    sqlight.text(hardware_set.projectid),
+    sqlight.text(hardware_set.name),
+    sqlight.int(hardware_set.capacity),
+  ]
+  let decoder = fn(dyn: Dynamic) { Ok(Nil) }
+  let res = sql.create_hardware_set(db.inner, params, decoder)
+
+  wisp.log_info("DB create_hardware_set " <> string.inspect(res))
+
+  use returned <- result.then(res)
+  let assert [] = returned
+
+  Ok(Nil)
+}
