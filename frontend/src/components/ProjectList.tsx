@@ -6,7 +6,7 @@ interface Project {
     projectid: string;
     name: string;
     description: string;
-};
+}
 
 const initialState: Project[] = [];
 
