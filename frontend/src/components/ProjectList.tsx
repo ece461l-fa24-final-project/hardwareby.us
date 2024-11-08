@@ -15,6 +15,7 @@ export default function ProjectList() {
     const { token } = useAuth();
 
     useEffect(() => {
+        let fetched = false;
         fetch(`/api/v1/project/`, {
             method: "GET",
             headers: {
@@ -22,9 +23,15 @@ export default function ProjectList() {
             },
         })
             .then((response) => response.json())
-            .then((data) => setProjects(data as Project[]))
+            .then((data) => {
+                if(!fetched)
+                    setProjects(data as Project[])
+            })
             .catch((err) => console.log(err));
-    });
+            return () => {
+                fetched = true;
+            }
+    }, []);
 
     return (
         <div className="existing-projects-list">
