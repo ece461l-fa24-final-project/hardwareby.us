@@ -1,35 +1,44 @@
+import { useState, useEffect } from "react";
+import useAuth from "../hooks/Auth.tsx";
+import "../styles/ProjectList.css";
 
-import { useState } from 'react'
-import '../styles/ProjectList.css'
+type Project = {
+    projectid: string;
+    name: string;
+    description: string;
+};
 
-
-
-
-const projectsExisting = [
-  {name: 'Demo One Project', description: 'This is where the project description goes', id: 223},
-  {name: 'Demo Two Project', description: 'Project Description', id: 1523},
-  {name: 'Demo Three Project', description: 'Project Description', id: 449}
-]
-
+const initialState: Project[] = [];
 
 export default function ProjectList() {
+    let [projects, setProjects] = useState(initialState);
+    let { token } = useAuth();
 
-  return (
-    <div className="project-exist-list">
-      <h2 className='existingProjectsHeader'>Existing Projects</h2>
-      <ul>
-        {projectsExisting.map((project) => (
-          <li key={project.id} className="project-card">
-            <h3>{project.name}</h3>
-            <p>Project ID: {project.id}</p>
-            <p>{project.description}</p>
-            <button>Log In</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    useEffect(() => {
+        fetch(`/api/v1/project/`, {
+            method: "GET",
+            headers: {
+                Authorization: token?.data ? `${token.data}` : "",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => setProjects(data))
+            .catch((err) => console.log(err));
+    });
+
+    return (
+        <div className="existing-projects-list">
+            <h2 className="existing-projects-header">Existing Projects</h2>
+            <ul>
+                {projects.map((project) => (
+                    <li key={project.projectid} className="project-card">
+                        <h3>{project.name}</h3>
+                        <p>Project ID: {project.projectid}</p>
+                        <p>{project.description}</p>
+                        <button>View Project</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }
-
-
-

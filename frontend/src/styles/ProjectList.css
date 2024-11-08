@@ -1,41 +1,29 @@
-
-*{
-
-    background-color: #f9f9f9;
-}
-.existingProjectsHeader{
-
+.existing-projects-header {
     margin-bottom: 1rem;
-
+    color: black;
 }
 
-
-.project-exist-list {
+.existing-projects-list {
     width: 100vw;
-    
     display: inline;
-    background-color: #f9f9f9;
     padding: 1.5rem;
     border-radius: 0.5rem;
-    
-  }
+}
 
-
-  .project-card {
+.project-card {
     padding: 1rem;
     margin-bottom: 2rem;
-    
     background-color: white;
     border-radius: 0.3rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .project-card h3 {
+}
+
+.project-card h3 {
     color: #333;
     background-color: white;
-  }
-  
-  .project-card button {
+}
+
+.project-card button {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     background-color: orange;
@@ -44,19 +32,18 @@
     border-radius: 0.3rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
-  
-  .project-card button:hover {
+}
+
+.project-card button:hover {
     background-color: orange;
-  }
-  
-  .project-exist-list ul {
+}
+
+.project-exist-list ul {
     list-style-type: none;
     padding: 0;
-   
-  }
-  
+}
 
-  .project-card p{
+.project-card p {
     background-color: white;
-  }
+    color: #333;
+}
