@@ -38,6 +38,32 @@ fn with_context(testcase: fn(fn() -> web.Context) -> t) -> t {
   testcase(context)
 }
 
+/// Automatically includes "Bearer " before token
+fn with_bearer_token(ctx: fn() -> web.Context, testcase: fn(String) -> t) -> t {
+  // need to create and log in user before we can test the project creation
+  let request =
+    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  let request =
+    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  response.headers
+  |> should.equal([#("content-type", "application/json; charset=utf-8")])
+
+  let assert wisp.Text(jwt) = response.body
+  let token = string_builder.to_string(jwt)
+
+  testcase("Bearer " <> token)
+}
+
 pub fn get_home_page_test() {
   use ctx <- with_context
 
@@ -118,27 +144,7 @@ pub fn auth_api_test() {
 pub fn project_api_create_project_test() {
   use ctx <- with_context
   use <- with_logger
-
-  // need to create and log in user before we can test the project creation
-  let request =
-    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  let request =
-    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  response.headers
-  |> should.equal([#("content-type", "application/json; charset=utf-8")])
-
-  let assert wisp.Text(jwt) = response.body
-  let token = string_builder.to_string(jwt)
+  use token <- with_bearer_token(ctx)
 
   // now we can test creating the project
   let request =
@@ -156,29 +162,8 @@ pub fn project_api_create_project_test() {
 pub fn project_api_cant_create_identical_project_test() {
   use ctx <- with_context
   use <- with_logger
+  use token <- with_bearer_token(ctx)
 
-  // need to create and log in user before we can test the project creation
-  let request =
-    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  let request =
-    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  response.headers
-  |> should.equal([#("content-type", "application/json; charset=utf-8")])
-
-  let assert wisp.Text(jwt) = response.body
-  let token = string_builder.to_string(jwt)
-
-  // now we can test creating the project
   let request =
     testing.post(
       "/api/v1/project/foo?name=Foo&description=bar",
@@ -206,27 +191,7 @@ pub fn project_api_cant_create_identical_project_test() {
 pub fn hardware_api_create_hardware_set_test() {
   use ctx <- with_context
   use <- with_logger
-
-  // Create user for JWT
-  let request =
-    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  let request =
-    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  response.headers
-  |> should.equal([#("content-type", "application/json; charset=utf-8")])
-
-  let assert wisp.Text(jwt) = response.body
-  let token = string_builder.to_string(jwt)
+  use token <- with_bearer_token(ctx)
 
   // Create project so we can create a set
   let request =
@@ -256,27 +221,7 @@ pub fn hardware_api_create_hardware_set_test() {
 pub fn project_api_join_project_test() {
   use ctx <- with_context
   use <- with_logger
-
-  // need to create and log in user before we can test the project creation
-  let request =
-    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  let request =
-    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  response.headers
-  |> should.equal([#("content-type", "application/json; charset=utf-8")])
-
-  let assert wisp.Text(jwt) = response.body
-  let token = string_builder.to_string(jwt)
+  use token <- with_bearer_token(ctx)
 
   // Create a test project which we'll be automatically added to.
   let request =
@@ -329,7 +274,11 @@ pub fn project_api_join_project_test() {
 
   // Try joining an existing project as a new user.
   let request =
-    testing.put("/api/v1/project/foo", [#("authorization", token)], "")
+    testing.put(
+      "/api/v1/project/foo",
+      [#("authorization", "Bearer " <> token)],
+      "",
+    )
   let response = router.handle_request(request, ctx)
 
   response.status
@@ -339,27 +288,7 @@ pub fn project_api_join_project_test() {
 pub fn project_api_get_projects_test() {
   use ctx <- with_context
   use <- with_logger
-
-  // Login for authorization
-  let request =
-    testing.post("/api/v1/auth/signup?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  let request =
-    testing.post("/api/v1/auth/login?userid=foo&password=bar", [], "")
-  let response = router.handle_request(request, ctx)
-
-  response.status
-  |> should.equal(201)
-
-  response.headers
-  |> should.equal([#("content-type", "application/json; charset=utf-8")])
-
-  let assert wisp.Text(jwt) = response.body
-  let token = string_builder.to_string(jwt)
+  use token <- with_bearer_token(ctx)
 
   // Create a project
   let request =
