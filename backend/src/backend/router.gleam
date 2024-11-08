@@ -103,7 +103,7 @@ pub fn auth(req: wisp.Request, ctx: Context) -> wisp.Response {
   }
 }
 
-// Priveledged API
+// Privileged API
 pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
   let assert ["api", "v1", "project", ..route] = wisp.path_segments(req)
 
@@ -128,11 +128,10 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
 
           project.create_project(web.Project(projectid, description), jwt, ctx)
         }
-        // Put -> {
-        //   // Add a user to a project
-        //   use <- wisp.require_method(req, http.Put)
-        //   wisp.response(501)
-        // }
+        Put -> {
+          // Add calling user to a project
+          project.join_project(projectid, jwt, ctx)
+        }
         // Delete -> {
         //   // Delete a project (and associated user connections)
         //   use <- wisp.require_method(req, http.Delete)
@@ -146,7 +145,7 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
   }
 }
 
-// Priveledged API
+// Privileged API
 pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
   let assert ["api", "v1", "hardware", ..route] = wisp.path_segments(req)
   use jwt <- get_required_auth(req)
