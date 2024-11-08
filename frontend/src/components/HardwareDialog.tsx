@@ -1,4 +1,4 @@
-import { useState, useRef} from "react";
+import { useState, useRef } from "react";
 import useAuth from "../hooks/Auth.tsx";
 
 // Component for checking out hardware
@@ -19,14 +19,12 @@ function CheckOutHardware() {
 
         //set url for CheckOutHardware
         const url = `/api/v1/projects/${encodedProjectId}/${encodedHardwareId}/check-out?amount=${quantity}`;
-        
+
         try {
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
-                    Authorization: token?.data
-                        ? `Bearer ${token.data}`
-                        : "",
+                    Authorization: token?.data ? `Bearer ${token.data}` : "",
                 },
             });
 
@@ -46,7 +44,11 @@ function CheckOutHardware() {
     return (
         <dialog ref={dialogRef}>
             <h2>Check Out Hardware</h2>
-            <form onSubmit={(e) => { handleSubmit(e).catch((error) => console.error(error)); }}>
+            <form
+                onSubmit={(e) => {
+                    handleSubmit(e).catch((error) => console.error(error));
+                }}
+            >
                 <label>
                     Project ID:
                     <input
@@ -71,7 +73,9 @@ function CheckOutHardware() {
                         type="number"
                         value={quantity}
                         onChange={(e) =>
-                            setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                            setQuantity(
+                                Math.max(1, parseInt(e.target.value) || 1),
+                            )
                         }
                         min="1"
                         required
@@ -98,10 +102,10 @@ function CheckInHardware() {
         // URL encode the projectId and hardwareId to avoid issues with special characters
         const encodedProjectId = encodeURIComponent(projectId);
         const encodedHardwareId = encodeURIComponent(hardwareId);
-        
+
         //set url for CheckInHardware
         const url = `/api/v1/projects/${encodedProjectId}/${encodedHardwareId}/check-in?amount=${quantity}`;
-        
+
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -127,7 +131,11 @@ function CheckInHardware() {
     return (
         <dialog ref={dialogRef}>
             <h2>Check In Hardware</h2>
-            <form onSubmit={(e) => { handleSubmit(e).catch((error) => console.error(error)); }}>
+            <form
+                onSubmit={(e) => {
+                    handleSubmit(e).catch((error) => console.error(error));
+                }}
+            >
                 <label>
                     Project ID:
                     <input
@@ -152,7 +160,9 @@ function CheckInHardware() {
                         type="number"
                         value={quantity}
                         onChange={(e) =>
-                            setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                            setQuantity(
+                                Math.max(1, parseInt(e.target.value) || 1),
+                            )
                         }
                         min="1"
                         required
@@ -172,8 +182,12 @@ export default function HardwareDialog() {
 
     return (
         <>
-            <button onClick={() => setIsCheckOutOpen(true)}>Check Out Hardware</button>
-            <button onClick={() => setIsCheckInOpen(true)}>Check In Hardware</button>
+            <button onClick={() => setIsCheckOutOpen(true)}>
+                Check Out Hardware
+            </button>
+            <button onClick={() => setIsCheckInOpen(true)}>
+                Check In Hardware
+            </button>
 
             {isCheckOutOpen && <CheckOutHardware />}
             {isCheckInOpen && <CheckInHardware />}
