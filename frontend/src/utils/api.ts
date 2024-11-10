@@ -22,7 +22,6 @@ export default function call(
     method: Method,
     token?: Token,
 ): Promise<Response> {
-
     assert(
         !route.startsWith("/api/v1"),
         "Api call utility function already prefixes api for you",

@@ -10,11 +10,11 @@ export default defineConfig(() => {
         server: {
             // This will automatically redirect API calls for us
             proxy: {
-                '/api': {
-                    target: 'http://localhost:8080',
+                "/api": {
+                    target: "http://localhost:8080",
                     changeOrigin: true,
-                    secure: false
-                }
+                    secure: false,
+                },
             },
         },
         build: {

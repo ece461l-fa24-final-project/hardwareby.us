@@ -12,7 +12,7 @@ interface Project {
 const initialState: Project[] = [];
 
 interface ProjectListProps {
-    token: Token
+    token: Token;
 }
 
 export default function ProjectList({ token }: Readonly<ProjectListProps>) {

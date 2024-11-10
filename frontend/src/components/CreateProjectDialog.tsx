@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../styles/CreateProjectDialog.css";
 import { Token } from "../contexts/Auth.tsx";
 import call, { Method } from "../utils/api.ts";
-import { To } from "react-router-dom";
 
 // Define an enum for error types
 enum ErrorType {
@@ -13,10 +12,12 @@ enum ErrorType {
 }
 
 interface CreateProjectDialogProps {
-    token: Token
+    token: Token;
 }
 
-export default function CreateProjectDialog({ token }: Readonly<CreateProjectDialogProps>) {
+export default function CreateProjectDialog({
+    token,
+}: Readonly<CreateProjectDialogProps>) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
