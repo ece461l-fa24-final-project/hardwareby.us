@@ -11,7 +11,11 @@ interface Project {
 
 const initialState: Project[] = [];
 
-export default function ProjectList(token: Readonly<Token>) {
+interface ProjectListProps {
+    token: Token
+}
+
+export default function ProjectList({ token }: Readonly<ProjectListProps>) {
     const [projects, setProjects] = useState<Project[]>(initialState);
 
     useEffect(() => {

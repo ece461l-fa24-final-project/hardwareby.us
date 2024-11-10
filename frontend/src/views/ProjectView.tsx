@@ -4,7 +4,11 @@ import "../styles/ProjectList.css";
 import CreateProjectDialog from "../components/CreateProjectDialog";
 import { Token } from "../contexts/Auth.tsx";
 
-export default function ProjectView(token: Token) {
+interface ProjectViewProps {
+    token: Token
+}
+
+export default function ProjectView({ token }: Readonly<ProjectViewProps>) {
     return (
         <>
             <div className="container">
