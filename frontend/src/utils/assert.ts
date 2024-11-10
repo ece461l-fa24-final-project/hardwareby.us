@@ -1,11 +1,8 @@
-interface Assert {
-    (condition: boolean, message?: string): asserts condition;
-
-    nonNullable: <T>(
-        value: T,
-        message?: string,
-    ) => asserts value is NonNullable<T>;
-}
+// ) => asserts value is NonNullable<T>;
+//     message?: string,
+//     value: T,
+// nonNullable: <T>(
+type Assert = (condition: boolean, message?: string) => asserts condition;
 
 /**
  * Custom error for development assertions
@@ -22,7 +19,14 @@ class DevAssertionError extends Error {
  * In production, the assertions are removed by the bundler
  */
 const createDevAssert = () => {
-    const assert = ((
+    // assert.nonNullable = <T>(
+    //     value: T,
+    //     message = "Value must not be null or undefined",
+    // ): asserts value is NonNullable<T> => {
+    //     assert(value != null, message);
+    // };
+
+    return ((
         condition: boolean,
         message = "Assertion failed",
     ): asserts condition => {
@@ -32,17 +36,8 @@ const createDevAssert = () => {
             }
         }
     }) as Assert;
-
-    assert.nonNullable = <T>(
-        value: T,
-        message = "Value must not be null or undefined",
-    ): asserts value is NonNullable<T> => {
-        assert(value != null, message);
-    };
-
-    return assert;
 };
 
-const assert = createDevAssert();
+const assert: Assert = createDevAssert();
 
 export default assert;

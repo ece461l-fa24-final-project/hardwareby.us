@@ -3,23 +3,26 @@
 import { Token } from "../contexts/Auth.tsx";
 import assert from "./assert.ts";
 
-const BASE_URL = import.meta.env.DEV ? "localhost:8080/api/v1" : "/api/v1";
+// const BASE_URL = import.meta.env.DEV ? "localhost:8080/api/v1" : "/api/v1";
+const BASE_URL = "/api/v1";
 
 export enum Method {
     Get = "GET",
     Post = "POST",
 }
 
+/**
+ * Call the backend API
+ * @param route The route of the API function to call
+ * @param method The HTTP method used for the API call
+ * @param token The auth token, if it exists. Used to automatically add the Auth headers for you.
+ */
 export default function call(
     route: string,
     method: Method,
     token?: Token,
 ): Promise<Response> {
-    // if (route.startsWith("/api/v1")) {
-    //   throw new Error(
-    //     "This utility functions already add the base api prefix for you!"
-    //   );
-    // }
+
     assert(
         !route.startsWith("/api/v1"),
         "Api call utility function already prefixes api for you",
