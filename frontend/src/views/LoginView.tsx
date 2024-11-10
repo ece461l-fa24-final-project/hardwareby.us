@@ -1,6 +1,7 @@
 import UserForm from "../components/UserForm";
 import useAuth from "../hooks/Auth";
 import { useNavigate } from "react-router-dom";
+import call, { Method } from "../utils/api.ts";
 
 export default function LoginView() {
     const navigate = useNavigate();
@@ -13,11 +14,9 @@ export default function LoginView() {
     ): Promise<boolean> => {
         try {
             // API call to authenticate the user
-            const response = await fetch(
-                `/api/v1/auth/login?userid=${encodeURIComponent(userId)}&password=${encodeURIComponent(password)}`,
-                {
-                    method: "POST",
-                },
+            const response = await call(
+                `auth/login?userid=${encodeURIComponent(userId)}&password=${encodeURIComponent(password)}`,
+                Method.Post,
             );
 
             //Check if signup was successful

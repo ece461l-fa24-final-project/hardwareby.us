@@ -3,7 +3,7 @@ import { createContext, useState, ReactNode } from "react";
 /**
  * Wrapper for the JWT given to us by the server
  */
-interface Token {
+export interface Token {
     data: string;
 }
 

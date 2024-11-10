@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import useAuth from "../hooks/Auth.tsx";
 import "../styles/ProjectList.css";
+import { Token } from "../contexts/Auth.tsx";
+import call, { Method } from "../utils/api.ts";
 
 interface Project {
     projectid: string;
@@ -10,18 +11,16 @@ interface Project {
 
 const initialState: Project[] = [];
 
-export default function ProjectList() {
+interface ProjectListProps {
+    token: Token;
+}
+
+export default function ProjectList({ token }: Readonly<ProjectListProps>) {
     const [projects, setProjects] = useState<Project[]>(initialState);
-    const { token } = useAuth();
 
     useEffect(() => {
         let fetched = false;
-        fetch(`/api/v1/project/`, {
-            method: "GET",
-            headers: {
-                Authorization: token?.data ? `Bearer ${token.data}` : "",
-            },
-        })
+        call("/project", Method.Get, token)
             .then((response) => response.json())
             .then((data) => {
                 if (!fetched) setProjects(data as Project[]);
@@ -30,7 +29,7 @@ export default function ProjectList() {
         return () => {
             fetched = true;
         };
-    }, []);
+    }, [token]);
 
     return (
         <div className="existing-projects-list">

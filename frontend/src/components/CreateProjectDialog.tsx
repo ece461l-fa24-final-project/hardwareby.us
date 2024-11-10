@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import useAuth from "../hooks/Auth.tsx";
 import "../styles/CreateProjectDialog.css";
+import { Token } from "../contexts/Auth.tsx";
+import call, { Method } from "../utils/api.ts";
 
 // Define an enum for error types
 enum ErrorType {
@@ -10,12 +11,17 @@ enum ErrorType {
     Success = "Project created successfully!",
 }
 
-export default function CreateProjectDialog() {
+interface CreateProjectDialogProps {
+    token: Token;
+}
+
+export default function CreateProjectDialog({
+    token,
+}: Readonly<CreateProjectDialogProps>) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
     const [projectID, setProjectID] = useState("");
-    const { token } = useAuth();
     const [error, setError] = useState<ErrorType>(ErrorType.None);
 
     const openDialog = () => {
@@ -28,14 +34,10 @@ export default function CreateProjectDialog() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        fetch(
-            `/api/v1/project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: token?.data ? `Bearer ${token.data}` : "",
-                },
-            },
+        call(
+            `project/${projectID}?name=${encodeURIComponent(projectName)}&description=${encodeURIComponent(description)}`,
+            Method.Post,
+            token,
         )
             .then((response) => {
                 if (!response.ok) {
@@ -43,7 +45,7 @@ export default function CreateProjectDialog() {
                 }
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 setError(ErrorType.ProjectCreationFailed);
             })
             .finally(() => {
@@ -63,7 +65,7 @@ export default function CreateProjectDialog() {
                     {error && <p className="error">{error}</p>}
                     <form
                         onSubmit={(e: React.FormEvent) => {
-                            void handleSubmit(e);
+                            handleSubmit(e);
                         }}
                     >
                         <input
