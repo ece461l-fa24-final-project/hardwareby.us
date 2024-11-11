@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import '../styles/CreateProjectDialog.css';
 import { useParams } from 'react-router';
 import useAuth from '../hooks/Auth';
+import Hardware from '../components/HardwareSetClass';
+import call, { Method } from '../utils/api';
 
 // Define an enum for error types
 enum ErrorType {
@@ -15,21 +17,20 @@ const ProjectView = () => {
     const {projectId} = useParams<{projectId: string}>();
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
-    const [hardwareSet, setHardwareSets] = useState<string[]>([]);
+    const [hardwareSet, setHardwareSets] = useState<Hardware[]>([]);
     const {token} = useAuth();
     const [error, setError] = useState<ErrorType>(ErrorType.None);
 
 
-    const getProjectDetails = () => {        
-        fetch(`/api/projects/${projectId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        })
+    const getProjectDetails = () => {      
+        call(
+            `/api/projects/${projectId}`,
+            Method.Get,
+        )
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Failed to fetch project details');
+                    setError(ErrorType.PageOpenError);
+                    return error;
                 }
                 return response.json();
             })
@@ -47,35 +48,6 @@ const ProjectView = () => {
             });
     };
 
-    const getHardwareDetails = (hardwareId: string) =>{
-        
-        fetch(`/api/projects/${projectId}/${hardwareId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch project details');
-                }
-                return response.json();
-            })
-            .then((data: any) => {
-                setHardwareSets(data.hardwaresets);
-                setError(ErrorType.None);
-            })
-            .catch(() => {
-                setError(ErrorType.PageOpenError);
-            })
-            .finally(() => {
-                // Any cleanup or final operations can go here
-            });
-
-
-
-    }
-
     return (
         <div className="project-view">
             <h1>Project View</h1>
@@ -88,7 +60,12 @@ const ProjectView = () => {
             </div>
             <div>
                 <h2>Hardware Information</h2>
-                
+                {error && <p className="error">{error}</p>}
+                {hardwareSet.map((hardware) => (
+                    <div key={hardware.id} className="hardware-box">
+                        <h3>Hardware Name: {hardware.name}</h3>
+                    </div>
+                ))}
             </div>
            
             {error && <p className="error">{error}</p>}
