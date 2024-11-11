@@ -162,11 +162,7 @@ pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
           use params <- get_required_query(req, ["projectid", "name"])
           let assert [projectid, name] = params
 
-          hardware.create_hardware_set(
-            web.HardwareSet(-1, projectid, name, 100, 100),
-            jwt,
-            ctx,
-          )
+          hardware.create_hardware_set(projectid, name, jwt, ctx)
         }
         _ -> wisp.method_not_allowed(allowed: [http.Post])
       }

@@ -6,12 +6,13 @@ import gwt
 import wisp
 
 pub fn create_hardware_set(
-  hardware_set: web.HardwareSet,
+  projectid: String,
+  name: String,
   jwt: gwt.Jwt(gwt.Verified),
   ctx: web.Context,
 ) -> wisp.Response {
   let mapper = fn(_) {
-    db.create_hardware_set(ctx.db, hardware_set)
+    db.create_hardware_set(ctx.db, projectid, name)
     |> result.map(fn(_) { wisp.response(201) })
     |> result.unwrap(or: wisp.bad_request())
   }

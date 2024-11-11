@@ -104,12 +104,14 @@ pub fn get_projects(
 
 pub fn create_hardware_set(
   db: web.Connection,
-  hardware_set: web.HardwareSet,
+  projectid: String,
+  name: String,
 ) -> Result(Nil, Error) {
   let params = [
-    sqlight.text(hardware_set.projectid),
-    sqlight.text(hardware_set.name),
-    sqlight.int(hardware_set.capacity),
+    sqlight.text(projectid),
+    sqlight.text(name),
+    sqlight.int(100),
+    // Hardcoded 100 capacity for now
   ]
   let decoder = fn(dyn: Dynamic) { Ok(Nil) }
   let res = sql.create_hardware_set(db.inner, params, decoder)
