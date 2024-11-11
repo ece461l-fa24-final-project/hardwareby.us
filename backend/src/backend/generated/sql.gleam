@@ -103,6 +103,23 @@ VALUES (?, ?)"
   |> result.map_error(error.DatabaseError)
 }
 
+pub fn get_hardware_sets(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters:
+-- ?1 - The projectid of the project to grab associated sets of.
+
+SELECT hs.id, hs.projectid, hs.name, hs.capacity, hs.available
+FROM hardware_sets hs
+INNER JOIN projects p ON hs.projectid = p.projectid
+WHERE hs.projectid = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
 pub fn get_projects(
   db: sqlight.Connection,
   arguments: List(sqlight.Value),

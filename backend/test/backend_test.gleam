@@ -336,3 +336,93 @@ pub fn project_api_get_projects_test() {
     |> json.to_string_builder,
   ))
 }
+
+pub fn hardware_api_get_hardware_sets_test() {
+  use ctx <- with_context
+  use <- with_logger
+  use token <- with_bearer_token(ctx)
+
+  // Create project so we can create a set
+  let request =
+    testing.post(
+      "/api/v1/project/foo?name=Foo&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a new hardware set
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=foo&name=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a second hardware set
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=foo&name=bar2",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a new project so we can add 1 set
+  let request =
+    testing.post(
+      "/api/v1/project/bar?name=Bar&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Add one set 
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=bar&name=foo",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Get hardware sets for project with only 1 set.
+  let request = testing.get("/api/v1/hardware/bar", [#("authorization", token)])
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(200)
+
+  response.body
+  |> should.equal(wisp.Text(
+    json.array(
+      from: [web.HardwareSet(3, "bar", "foo", 100, 100)],
+      of: fn(hardware_set: web.HardwareSet) -> Json {
+        json.object([
+          #("id", json.int(hardware_set.id)),
+          #("projectid", json.string(hardware_set.projectid)),
+          #("name", json.string(hardware_set.name)),
+          #("capacity", json.int(hardware_set.capacity)),
+          #("available", json.int(hardware_set.available)),
+        ])
+      },
+    )
+    |> json.to_string_builder,
+  ))
+}

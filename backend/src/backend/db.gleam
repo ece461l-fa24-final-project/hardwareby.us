@@ -121,3 +121,25 @@ pub fn create_hardware_set(
 
   Ok(Nil)
 }
+
+pub fn get_hardware_sets(
+  db: web.Connection,
+  projectid: String,
+) -> Result(List(web.HardwareSet), Error) {
+  let params = [sqlight.text(projectid)]
+  let decoder =
+    dyn.decode5(
+      web.HardwareSet,
+      dyn.element(0, dyn.int),
+      dyn.element(1, dyn.string),
+      dyn.element(2, dyn.string),
+      dyn.element(3, dyn.int),
+      dyn.element(4, dyn.int),
+    )
+  let res = sql.get_hardware_sets(db.inner, params, decoder)
+
+  wisp.log_info("DB get_hardware_sets " <> string.inspect(res))
+
+  use returned <- result.then(res)
+  Ok(returned)
+}

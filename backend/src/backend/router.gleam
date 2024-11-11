@@ -163,12 +163,20 @@ pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
           let assert [projectid, name] = params
 
           hardware.create_hardware_set(
-            web.HardwareSet(projectid, name, 100, 100),
+            web.HardwareSet(-1, projectid, name, 100, 100),
             jwt,
             ctx,
           )
         }
         _ -> wisp.method_not_allowed(allowed: [http.Post])
+      }
+    }
+    [projectid] -> {
+      case req.method {
+        Get -> {
+          hardware.get_hardware_sets(projectid, jwt, ctx)
+        }
+        _ -> wisp.method_not_allowed(allowed: [http.Get])
       }
     }
     _ -> wisp.bad_request()
