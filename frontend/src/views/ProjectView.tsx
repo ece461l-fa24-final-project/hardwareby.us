@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../styles/CreateProjectDialog.css';
 import { useParams } from 'react-router';
-import useAuth from '../hooks/Auth';
 import Hardware from '../components/HardwareSetClass';
 import call, { Method } from '../utils/api';
+import HardwareDialog from '../components/HardwareDialog';
 
 // Define an enum for error types
 enum ErrorType {
@@ -18,11 +18,7 @@ const ProjectView = () => {
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
     const [hardwareSet, setHardwareSets] = useState<Hardware[]>([]);
-    const {token} = useAuth();
-    const [error, setError] = useState<ErrorType>(ErrorType.None);
-
-
-    const getProjectDetails = () => {      
+    const [error, setError] = useState<ErrorType>(ErrorType.None); 
         call(
             `/api/projects/${projectId}`,
             Method.Get,
@@ -46,7 +42,6 @@ const ProjectView = () => {
             .finally(() => {
                 // Any cleanup or final operations can go here
             });
-    };
 
     return (
         <div className="project-view">
@@ -64,6 +59,7 @@ const ProjectView = () => {
                 {hardwareSet.map((hardware) => (
                     <div key={hardware.id} className="hardware-box">
                         <h3>Hardware Name: {hardware.name}</h3>
+                        <HardwareDialog/>
                     </div>
                 ))}
             </div>

@@ -5,7 +5,7 @@ import ProjectsView from "./views/ProjectsView.tsx";
 import AuthProvider from "./contexts/Auth.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import SignupView from "./views/SignupView.tsx";
-import Pract from "./views/pract.tsx";
+
 
 export default function App() {
     return (
@@ -21,10 +21,9 @@ export default function App() {
                     <Route
                         path="/projects"
                         element={
-                            // <ProtectedRoute>     
-                            //     <ProjectsView token={useAuth().token!} />
-                            // </ProtectedRoute>
-                            <Pract/>
+                            <ProtectedRoute>     
+                                <ProjectsView token={useAuth().token!} />
+                            </ProtectedRoute>
                         }
                     />
                 </Routes>
