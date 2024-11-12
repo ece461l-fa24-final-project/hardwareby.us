@@ -103,6 +103,24 @@ VALUES (?, ?)"
   |> result.map_error(error.DatabaseError)
 }
 
+pub fn get_hardware_set(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- This is used in checkin/checkout to verify that the operation is valid before updating the column.
+-- I think this can technically be done in SQL, but I'm not sure how to return specifically an error if the query is invalid.
+-- Parameters:
+-- ?1 - The id of the Hardware Set to get.
+
+SELECT *
+FROM hardware_sets
+WHERE id = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
 pub fn get_projects(
   db: sqlight.Connection,
   arguments: List(sqlight.Value),
@@ -116,6 +134,23 @@ SELECT p.projectid, p.name, p.description
 FROM projects p
 INNER JOIN user_projects up on p.projectid = up.projectid
 WHERE up.userid = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn update_hardware_set_capacity(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters:
+-- ?1 - The id of the Hardware Set to update.
+-- ?2 - The new capacity of the set.
+
+UPDATE hardware_sets
+SET capacity = ?2
+WHERE id = ?1;"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }

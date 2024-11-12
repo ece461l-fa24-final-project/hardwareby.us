@@ -19,3 +19,24 @@ pub fn create_hardware_set(
   |> result.map(mapper)
   |> result.unwrap(or: wisp.response(401))
 }
+
+pub fn checkin_hardware_set(
+  set_id: Int,
+  count: Int,
+  jwt: gwt.Jwt(gwt.Verified),
+  ctx: web.Context,
+) -> wisp.Response {
+  let hardware_set =
+    db.get_hardware_set(ctx.db, set_id)
+    |> result.unwrap(or: web.HardwareSet(-1, "", "", 0, 0))
+
+  let sum = hardware_set.available + count
+  case sum {
+    i if i <= hardware_set.capacity -> {
+      db.update_hardware_set_capacity(ctx.db, set_id, count)
+      |> result.map(fn(_) { wisp.response(200) })
+      |> result.unwrap(or: wisp.bad_request())
+    }
+    _ -> wisp.bad_request()
+  }
+}

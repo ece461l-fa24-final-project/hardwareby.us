@@ -163,12 +163,27 @@ pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
           let assert [projectid, name] = params
 
           hardware.create_hardware_set(
-            web.HardwareSet(projectid, name, 100, 100),
+            web.HardwareSet(-1, projectid, name, 100, 100),
             jwt,
             ctx,
           )
         }
         _ -> wisp.method_not_allowed(allowed: [http.Post])
+      }
+    }
+    ["checkin", setid] -> {
+      case req.method {
+        Put -> {
+          use params <- get_required_query(req, ["count"])
+          let assert [count] = params
+
+          case int.parse(setid), int.parse(count) {
+            Ok(setid), Ok(count) ->
+              hardware.checkin_hardware_set(setid, count, jwt, ctx)
+            _, _ -> wisp.bad_request()
+          }
+        }
+        _ -> wisp.method_not_allowed(allowed: [http.Put])
       }
     }
     _ -> wisp.bad_request()

@@ -1,9 +1,10 @@
-import backend/error.{type Error}
+import backend/error.{type Error, NotFoundError}
 import backend/generated/sql
 import backend/web
 import gleam/dynamic.{type DecodeError, type Dynamic, DecodeError} as dyn
 import gleam/http/request
 import gleam/int
+import gleam/list
 import gleam/result
 import gleam/string
 import simplifile
@@ -115,6 +116,46 @@ pub fn create_hardware_set(
   let res = sql.create_hardware_set(db.inner, params, decoder)
 
   wisp.log_info("DB create_hardware_set " <> string.inspect(res))
+
+  use returned <- result.then(res)
+  let assert [] = returned
+
+  Ok(Nil)
+}
+
+pub fn get_hardware_set(
+  db: web.Connection,
+  set_id: Int,
+) -> Result(web.HardwareSet, Error) {
+  let params = [sqlight.int(set_id)]
+  let decoder =
+    dyn.decode5(
+      web.HardwareSet,
+      dyn.element(0, dyn.int),
+      dyn.element(1, dyn.string),
+      dyn.element(2, dyn.string),
+      dyn.element(3, dyn.int),
+      dyn.element(4, dyn.int),
+    )
+  let res = sql.get_hardware_set(db.inner, params, decoder)
+
+  wisp.log_info("DB get_hardware_set " <> string.inspect(res))
+
+  use returned <- result.then(res)
+  list.first(returned)
+  |> result.map_error(NotFoundError)
+}
+
+pub fn update_hardware_set_capacity(
+  db: web.Connection,
+  set_id: Int,
+  capacity: Int,
+) -> Result(Nil, Error) {
+  let params = [sqlight.int(set_id), sqlight.int(capacity)]
+  let decoder = fn(dyn: Dynamic) { Ok(Nil) }
+  let res = sql.update_hardware_set_capacity(db.inner, params, decoder)
+
+  wisp.log_info("DB update_hardware_set_capacity " <> string.inspect(res))
 
   use returned <- result.then(res)
   let assert [] = returned
