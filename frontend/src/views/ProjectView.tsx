@@ -1,47 +1,59 @@
 import { useState } from 'react';
 import '../styles/CreateProjectDialog.css';
 import { useParams } from 'react-router';
-import Hardware from '../components/HardwareSetClass';
 import call, { Method } from '../utils/api';
-import HardwareDialog from '../components/HardwareDialog';
+import { Token } from '../contexts/Auth';
 
 // Define an enum for error types
 enum ErrorType {
     None = '',
     PageOpenError = 'Failed to open project-view. Please try again.',
+    NotAProjectError = "Data passed from API call is not a valid Project Data type",
     HardwareError ='No hardware set found.'
 }
 
+interface Project {
+    id: string;
+    name: string;
+    description: string;
+    hws: number[];
+  }
 
-const ProjectView = () => {
+  interface ProjectViewProps {
+    token: Token;
+}
+
+
+export default function ProjectView({token}: Readonly<ProjectViewProps>) {
     const {projectId} = useParams<{projectId: string}>();
-    const [projectName, setProjectName] = useState('');
-    const [description, setDescription] = useState('');
-    const [hardwareSet, setHardwareSets] = useState<Hardware[]>([]);
+    const [project, setProject] = useState<Project>({id: "", name: "", description: "", hws: []});
     const [error, setError] = useState<ErrorType>(ErrorType.None); 
+
         call(
             `/api/projects/${projectId}`,
             Method.Get,
+            token,
         )
             .then(response => {
                 if (!response.ok) {
                     setError(ErrorType.PageOpenError);
-                    return error;
+                    return error;  //return 404
                 }
                 return response.json();
             })
             .then((data: any) => {
-                setProjectName(data.name);
-                setDescription(data.description);
-                setHardwareSets(data.hardwaresets);  //I didnt see anything about this in the wiki but I am assuming this would return a list of hardwareId
+                setProject(data.project);
                 setError(ErrorType.None);
             })
             .catch(() => {
-                setError(ErrorType.PageOpenError);
+                setError(ErrorType.PageOpenError);   //Not a project data type
             })
             .finally(() => {
                 // Any cleanup or final operations can go here
             });
+
+//make hardware call under Get hardwareSet ApI
+
 
     return (
         <div className="project-view">
@@ -49,19 +61,14 @@ const ProjectView = () => {
             <div>
                 <h2>Project Information</h2>
                 <p>Project ID: {projectId}</p> {/* Displaying projectId */}
-                <p>Project Name: {projectName}</p> {/* Displaying projectName */}
-                <p>Description: {description}</p> {/* Displaying description */}
-                
+                <p>Project Name: {project.name}</p> {/* Displaying projectName */}
+                <p>Description: {project.description}</p> {/* Displaying description */}
             </div>
             <div>
                 <h2>Hardware Information</h2>
                 {error && <p className="error">{error}</p>}
-                {hardwareSet.map((hardware) => (
-                    <div key={hardware.id} className="hardware-box">
-                        <h3>Hardware Name: {hardware.name}</h3>
-                        <HardwareDialog/>
-                    </div>
-                ))}
+                {project.hws.map((hardwareId) => (
+                    <HardwareSet id={hardwareId} token={token} />))}
             </div>
            
             {error && <p className="error">{error}</p>}
@@ -69,4 +76,3 @@ const ProjectView = () => {
     );
 }
  
-export default ProjectView;
