@@ -146,10 +146,10 @@ pub fn update_hardware_set_capacity(
   let query =
     "-- Parameters:
 -- ?1 - The id of the Hardware Set to update.
--- ?2 - The new capacity of the set.
+-- ?2 - The new availability of the set.
 
 UPDATE hardware_sets
-SET capacity = ?2
+SET available = ?2
 WHERE id = ?1;"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)

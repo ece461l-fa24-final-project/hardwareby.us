@@ -336,3 +336,57 @@ pub fn project_api_get_projects_test() {
     |> json.to_string_builder,
   ))
 }
+
+pub fn hardware_api_checkout_checkin_hardware_set_test() {
+  use ctx <- with_context
+  use <- with_logger
+  use token <- with_bearer_token(ctx)
+
+  // Create a project
+  let request =
+    testing.post(
+      "/api/v1/project/foo?name=Foo&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a new hardware set
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=foo&name=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Check out 50 units of new set.
+  let request =
+    testing.put(
+      "/api/v1/hardware/checkout/1?count=50",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(200)
+
+  // Check in 45 units of new set.
+  let request =
+    testing.put(
+      "/api/v1/hardware/checkin/1?count=45",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(200)
+}
