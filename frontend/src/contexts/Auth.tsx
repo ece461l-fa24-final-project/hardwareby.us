@@ -19,16 +19,18 @@ export default function AuthProvider({
     children,
 }: Readonly<{ children: ReactNode }>) {
     const existingToken = localStorage.getItem("Authorization");
-    const [token, setToken] = useState<Token | null>(existingToken ? {data: existingToken} : null);
+    const [token, setToken] = useState<Token | null>(
+        existingToken ? { data: existingToken } : null,
+    );
 
     const login = (token: Token) => {
         setToken(token);
-        localStorage.setItem("Authorization", token.data)
-    }
+        localStorage.setItem("Authorization", token.data);
+    };
     const logout = () => {
         setToken(null);
-        localStorage.setItem("Authorization", "")
-    }
+        localStorage.setItem("Authorization", "");
+    };
 
     return (
         <AuthContext.Provider value={{ token: token, login, logout }}>
