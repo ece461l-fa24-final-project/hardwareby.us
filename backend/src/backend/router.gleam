@@ -171,6 +171,21 @@ pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
         _ -> wisp.method_not_allowed(allowed: [http.Post])
       }
     }
+    ["checkout", setid] -> {
+      case req.method {
+        Put -> {
+          use params <- get_required_query(req, ["count"])
+          let assert [count] = params
+
+          case int.parse(setid), int.parse(count) {
+            Ok(setid), Ok(count) ->
+              hardware.checkout_hardware_set(setid, count, jwt, ctx)
+            _, _ -> wisp.bad_request()
+          }
+        }
+        _ -> wisp.method_not_allowed(allowed: [http.Put])
+      }
+    }
     ["checkin", setid] -> {
       case req.method {
         Put -> {
