@@ -47,9 +47,6 @@ export default function ProjectView({token}: Readonly<ProjectViewProps>) {
             })
             .catch(() => {
                 setError(ErrorType.PageOpenError);   //Not a project data type
-            })
-            .finally(() => {
-                // Any cleanup or final operations can go here
             });
 
 //make hardware call under Get hardwareSet ApI
