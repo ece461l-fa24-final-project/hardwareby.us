@@ -24,7 +24,7 @@ export default function HardwareSetComponent({
 
     const handleCheckOut = () => {
         call(
-            `hardware/checkout/${encodeURIComponent(hardwareSet.id)}&count=${quantity}`,
+            `hardware/checkout/${encodeURIComponent(hardwareSet.id)}&count=${encodeURIComponent(quantity)}`,
             Method.Put,
             token,
         )
@@ -43,7 +43,7 @@ export default function HardwareSetComponent({
 
     const handleCheckIn = () => {
         call(
-            `hardware/checkin/${encodeURIComponent(hardwareSet.id)}&count=${quantity}`,
+            `hardware/checkin/${encodeURIComponent(hardwareSet.id)}&count=${encodeURIComponent(quantity)}`,
             Method.Put,
             token,
         )
