@@ -1,7 +1,13 @@
 import { Token } from "../contexts/Auth.tsx";
 import { HardwareSet } from "../utils/types.ts"
 import { useState } from "react";
+import call, { Method } from "../utils/api.ts"
 import "../styles/HardwareSetComponent.css"
+
+enum ErrorType {
+    None = "",
+    InvalidOperation = "The quantity you attempted to check in/out is invalid. Please try again."
+}
 
 interface HardwareSetComponentProps {
     token: Token;
@@ -13,7 +19,48 @@ export default function HardwareSetComponent({
     hardwareSet
 }: Readonly<HardwareSetComponentProps>) {
     const [quantity, setQuantity] = useState(1);
+    const [error, setError] = useState<ErrorType>(ErrorType.None);
     const availablePercent = (hardwareSet.available / hardwareSet.capacity) * 100;
+
+    const handleCheckOut = () => {
+        call(
+            `hardware/checkout/${encodeURIComponent(hardwareSet.id)}&count=${quantity}`,
+            Method.Put,
+            token
+        )
+        .then((response) => {
+            if(!response.ok) {
+                setError(ErrorType.InvalidOperation)
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            setError(ErrorType.InvalidOperation);
+        })
+        .finally(() => {
+            setQuantity(1);
+        })
+    }
+
+    const handleCheckIn = () => {
+        call(
+            `hardware/checkin/${encodeURIComponent(hardwareSet.id)}&count=${quantity}`,
+            Method.Put,
+            token
+        )
+        .then((response) => {
+            if(!response.ok) {
+                setError(ErrorType.InvalidOperation)
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            setError(ErrorType.InvalidOperation);
+        })
+        .finally(() => {
+            setQuantity(1);
+        })
+    }
 
     return (
         <>
@@ -41,8 +88,8 @@ export default function HardwareSetComponent({
                         />
                     </label>
                     <div style={{flexDirection: "column"}}>
-                        <button>Check Out</button>
-                        <button>Check In</button>
+                        <button onClick={handleCheckOut}>Check Out</button>
+                        <button onClick={handleCheckIn}>Check In</button>
                     </div>
                 </div>
             </div>

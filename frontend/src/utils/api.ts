@@ -9,6 +9,7 @@ const BASE_URL = "/api/v1";
 export enum Method {
     Get = "GET",
     Post = "POST",
+    Put = "PUT"
 }
 
 /**
