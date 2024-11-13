@@ -8,8 +8,12 @@ enum ErrorType {
     None = "",
     JoinFailed = "Failed to join project. Please try again.",
     InvalidInput = "Invalid input. Please check your entries.",
-    Success = "Successfully joined the project!",
+    ProjectNotFound = "The Project Id you enter does not exist. Please try again",
+    Unauthorized = "You do not have authorization to access this project.",
 }
+
+// Precompile a regex pattern for project ID validation
+const validIdInput = /^[\w-]+$/;
 
 interface JoinProjectDialogProps {
     token: Token;
@@ -28,23 +32,40 @@ export default function JoinProjectDialog({
     const closeDialog = () => {
         setIsDialogOpen(false);
         setError(ErrorType.None);
+        setProjectID(""); //clears project id field
     };
     //Function to handle project join. Take in param e for submission event
     const handleJoin = (e: React.FormEvent) => {
-        e.preventDefault(); //prevent page refresh 
+        e.preventDefault(); //prevent page refresh
+
+        // Validate the projectID input
+        if (!validIdInput.test(projectID)) {
+            setError(ErrorType.InvalidInput);
+            return; //Exit if validation fails
+        }
         //POST request call
         call(`project/${projectID}/join`, Method.Put, token)
-            .then((response) => {
-                if (!response.ok) {
-                    setError(ErrorType.JoinFailed);
-                } else {
-                    setError(ErrorType.Success);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                setError(ErrorType.JoinFailed);
-            })
+            .then(
+                (response) => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            //Project doesn't exist, invalid entry
+                            setError(ErrorType.ProjectNotFound);
+                        } else if (response.status === 401) {
+                            //unauthorized access handling
+                            setError(ErrorType.Unauthorized);
+                        } else {
+                            //Generic join fail
+                            setError(ErrorType.JoinFailed);
+                        }
+                    }
+                },
+                (err) => {
+                    // Handle rejections here directly in the .then() method
+                    console.error("Network or unexpected error:", err);
+                    setError(ErrorType.JoinFailed); // Fallback error
+                },
+            )
             .finally(() => {
                 closeDialog();
             });
