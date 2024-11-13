@@ -16,8 +16,14 @@ interface Project {
     id: string;
     name: string;
     description: string;
-    hws: number[];
   }
+interface HardwareSet{
+    id: number;
+    projectid: string;
+    name: string;
+    capacity: number;
+    available: number;
+}
 
   interface ProjectViewProps {
     token: Token;
@@ -26,7 +32,8 @@ interface Project {
 
 export default function ProjectView({token}: Readonly<ProjectViewProps>) {
     const {projectId} = useParams<{projectId: string}>();
-    const [project, setProject] = useState<Project>({id: "", name: "", description: "", hws: []});
+    const [project, setProject] = useState<Project>({id: "", name: "", description: ""});
+    const [hardwareSets, setHardwareSets] = useState<HardwareSet[]>([]);
     const [error, setError] = useState<ErrorType>(ErrorType.None); 
 
         call(
@@ -43,6 +50,7 @@ export default function ProjectView({token}: Readonly<ProjectViewProps>) {
             })
             .then((data: any) => {
                 setProject(data.project);
+                setHardwareSets(data.hardwareSets);
                 setError(ErrorType.None);
             })
             .catch(() => {
@@ -64,11 +72,10 @@ export default function ProjectView({token}: Readonly<ProjectViewProps>) {
             <div>
                 <h2>Hardware Information</h2>
                 {error && <p className="error">{error}</p>}
-                {project.hws.map((hardwareId) => (
-                    <HardwareSet id={hardwareId} token={token} />))}
+                {hardwareSets.map((hardwareSet) => (
+                    <HardwareSetComponent key={hardwareSet.id} token={token} hardwareSet={hardwareSet} />
+                ))}
             </div>
-           
-            {error && <p className="error">{error}</p>}
         </div>
     );
 }
