@@ -1,9 +1,8 @@
-import backend/error.{type Error}
+import backend/error.{type Error, NotFoundError}
 import backend/generated/sql
 import backend/web
-import gleam/dynamic.{type DecodeError, type Dynamic, DecodeError} as dyn
-import gleam/http/request
-import gleam/int
+import gleam/dynamic.{type Dynamic} as dyn
+import gleam/list
 import gleam/result
 import gleam/string
 import simplifile
@@ -18,15 +17,21 @@ pub fn connect(database: String) -> web.Connection {
   web.Connection(db)
 }
 
-pub fn check_user(db: web.Connection, user: web.User) -> Result(Bool, Error) {
-  let params = [sqlight.text(user.userid), sqlight.text(user.password)]
-  let res = sql.check_user(db.inner, params, dyn.element(0, dyn.int))
+pub fn get_user(db: web.Connection, userid: String) -> Result(web.User, Error) {
+  let params = [sqlight.text(userid)]
+  let decoder =
+    dyn.decode2(
+      web.User,
+      dyn.element(0, dyn.string),
+      dyn.element(1, dyn.string),
+    )
+  let res = sql.get_user(db.inner, params, decoder)
 
-  wisp.log_info("DB check_user " <> string.inspect(res))
+  wisp.log_info("DB get_user " <> string.inspect(userid))
 
   use returned <- result.then(res)
-  let assert [status] = returned
-  Ok(status != 0)
+  list.first(returned)
+  |> result.map_error(NotFoundError)
 }
 
 pub fn create_user(db: web.Connection, user: web.User) -> Result(Nil, Error) {
