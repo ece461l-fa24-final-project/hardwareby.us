@@ -2,6 +2,7 @@ import ProjectList from "../components/ProjectList.tsx";
 import "../styles/ProjectView.css";
 import "../styles/ProjectList.css";
 import CreateProjectDialog from "../components/CreateProjectDialog.tsx";
+import { Token } from "../contexts/Auth";
 
 interface ProjectsViewProps {
     token: Token;
