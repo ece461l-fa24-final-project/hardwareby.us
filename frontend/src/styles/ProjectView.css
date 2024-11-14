@@ -1,62 +1,32 @@
-* {
-    margin: 0;
-    padding: 0;
+h2 {
+    text-align: center;
+    color: #333;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.nav-hardwarelogo {
-    font-size: 1.5rem;
-    color: white;
-    text-decoration: none;
-    background-color: orange;
-}
-
-.nav-links {
-    list-style: none;
-    background-color: orange;
-    display: flex;
-    gap: 1.5rem;
-}
-
-.nav-links li {
-    background-color: orange;
-    font-size: 1rem;
-}
-
-.nav-links a {
-    background-color: orange;
-    color: white;
-    text-decoration: none;
-}
-
-.nav-links a:hover {
-    color: white;
-}
-
-.nav-hardwarelogo:hover {
-    color: white;
-}
-
-.project-controls {
-    padding: 5rem;
-    width: 50%;
-    flex-direction: column;
-    display: flex;
-}
-
-.project-controls a {
+.error {
+    color: red;
     text-align: center;
 }
 
-.project-list-div {
-    padding-top: 5.5rem;
-    width: 50%;
-    display: flex;
-    justify-content: center;
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: lightblue;
+    color: black;
+    font-display: bold;
 }
