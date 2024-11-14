@@ -1,0 +1,60 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-hardwarelogo {
+    font-size: 1.5rem;
+    color: white;
+    text-decoration: none;
+    background-color: orange;
+}
+
+.nav-links {
+    list-style: none;
+    background-color: orange;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links li {
+    background-color: orange;
+    font-size: 1rem;
+}
+
+.nav-links a {
+    background-color: orange;
+    color: white;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+.nav-hardwarelogo:hover {
+    color: white;
+}
+
+.create-new-proj {
+    padding: 5rem;
+    width: 50%;
+}
+
+.create-new-proj a {
+    text-align: center;
+}
+
+.project-list-div {
+    padding-top: 5.5rem;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+}
