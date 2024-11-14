@@ -17,7 +17,7 @@ export default function ProjectView({ token }: Readonly<ProjectViewProps>) {
             </div>
             <div className="project-controls">
                 <CreateProjectDialog token={token} />
-                <JoinProjectDialog token={token}/>
+                <JoinProjectDialog token={token} />
             </div>
         </div>
     );
