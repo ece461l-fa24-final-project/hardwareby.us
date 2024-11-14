@@ -1,7 +1,9 @@
 import backend/db
 import backend/web
+import beecrypt
 import birl
 import gleam/erlang/os
+import gleam/io
 import gleam/result
 import gleam/string
 import gleam/string_builder
@@ -46,21 +48,29 @@ pub fn get_secret() -> String {
 }
 
 pub fn create_user(user: web.User, ctx: web.Context) -> wisp.Response {
+  // Beecrypt generates a salt and stores it in the hash string, which it parses out later when verifying.
+  let hash = beecrypt.hash(user.password)
+  let user = web.User(user.userid, hash)
+
   db.create_user(ctx.db, user)
   |> result.map(fn(_) { wisp.response(201) })
   |> result.unwrap(or: wisp.bad_request())
 }
 
 pub fn check_user(user: web.User, ctx: web.Context) -> wisp.Response {
-  db.check_user(ctx.db, user)
-  |> result.map(fn(valid: Bool) {
-    case valid {
-      False -> wisp.bad_request()
-      True ->
-        generate_jwt(user.userid)
-        |> string_builder.from_string
-        |> wisp.json_response(201)
+  let db_hash =
+    db.get_user(ctx.db, user.userid)
+    |> result.map(fn(db_user: web.User) { db_user.password })
+    |> result.unwrap(or: "")
+
+  let assert False = string.is_empty(db_hash)
+
+  case beecrypt.verify(user.password, db_hash) {
+    True -> {
+      generate_jwt(user.userid)
+      |> string_builder.from_string
+      |> wisp.json_response(201)
     }
-  })
-  |> result.unwrap(or: wisp.bad_request())
+    False -> wisp.bad_request()
+  }
 }
