@@ -44,7 +44,7 @@ export default function JoinProjectDialog({
             return; //Exit if validation fails
         }
         //POST request call
-        call(`project/${projectID}/join`, Method.Put, token)
+        call(`project/${encodeURIComponent(projectID)}`, Method.Put, token)
             .then(
                 (response) => {
                     if (!response.ok) {
@@ -79,7 +79,7 @@ export default function JoinProjectDialog({
             )}
             {isDialogOpen && (
                 <div className="dialog">
-                    <h2>Create New Project</h2>
+                    <h2>Join Existing Project</h2>
                     {error && <p className="error">{error}</p>}
                     <form
                         onSubmit={(e: React.FormEvent) => {

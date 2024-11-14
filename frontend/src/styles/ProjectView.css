@@ -43,12 +43,14 @@
     color: white;
 }
 
-.create-new-proj {
+.project-controls {
     padding: 5rem;
     width: 50%;
+    flex-direction: column;
+    display: flex;
 }
 
-.create-new-proj a {
+.project-controls a {
     text-align: center;
 }
 
