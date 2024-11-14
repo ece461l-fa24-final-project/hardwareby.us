@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/LoginView.tsx";
-import ProjectView from "./views/ProjectView.tsx";
+import ProjectsView from "./views/ProjectsView.tsx";
 import AuthProvider from "./contexts/Auth.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import SignupView from "./views/SignupView.tsx";
@@ -20,7 +20,7 @@ export default function App() {
                         path="/projects"
                         element={
                             <ProtectedRoute>
-                                <ProjectView />
+                                <ProjectsView />
                             </ProtectedRoute>
                         }
                     />
