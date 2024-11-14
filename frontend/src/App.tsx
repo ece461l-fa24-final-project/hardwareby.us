@@ -5,7 +5,6 @@ import AuthProvider from "./contexts/Auth.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import SignupView from "./views/SignupView.tsx";
 
-
 export default function App() {
     return (
         <>
@@ -20,8 +19,8 @@ export default function App() {
                     <Route
                         path="/projects"
                         element={
-                            <ProtectedRoute>     
-                                <ProjectsView/>
+                            <ProtectedRoute>
+                                <ProjectsView />
                             </ProtectedRoute>
                         }
                     />
