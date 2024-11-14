@@ -111,22 +111,47 @@ pub fn create_hardware_set(
   db: web.Connection,
   projectid: String,
   name: String,
-) -> Result(Nil, Error) {
+) -> Result(Int, Error) {
+  let decoder = fn(dyn: Dynamic) { Ok(Nil) }
   let params = [
     sqlight.text(projectid),
     sqlight.text(name),
     sqlight.int(100),
     // Hardcoded 100 capacity for now
   ]
-  let decoder = fn(dyn: Dynamic) { Ok(Nil) }
   let res = sql.create_hardware_set(db.inner, params, decoder)
-
   wisp.log_info("DB create_hardware_set " <> string.inspect(res))
 
-  use returned <- result.then(res)
-  let assert [] = returned
+  let res = sql.get_last_rowid(db.inner, [], dyn.element(0, dyn.int))
+  wisp.log_info("DB get_last_rowid " <> string.inspect(res))
 
-  Ok(Nil)
+  use returned <- result.then(res)
+  list.first(returned)
+  |> result.map_error(NotFoundError)
+}
+
+pub fn get_hardware_set(
+  db: web.Connection,
+  set_id: Int,
+) -> Result(web.HardwareSet, Error) {
+  let params = [sqlight.int(set_id)]
+  let decoder =
+    dyn.decode5(
+      web.HardwareSet,
+      dyn.element(0, dyn.int),
+      dyn.element(1, dyn.string),
+      dyn.element(2, dyn.string),
+      dyn.element(3, dyn.int),
+      dyn.element(4, dyn.int),
+    )
+  let res = sql.get_hardware_set(db.inner, params, decoder)
+
+  wisp.log_info("DB get_hardware_set " <> string.inspect(res))
+
+  use returned <- result.then(res)
+  list.first(returned)
+  |> result.map_error(NotFoundError)
+  // This should never happen...
 }
 
 pub fn get_hardware_sets(

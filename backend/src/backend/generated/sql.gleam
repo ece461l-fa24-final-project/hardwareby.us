@@ -71,6 +71,23 @@ VALUES (?, ?)"
   |> result.map_error(error.DatabaseError)
 }
 
+pub fn get_hardware_set(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Used for GET hardware/id as well checkin/checkout for sanity checking purposes.
+-- Parameters:
+-- ?1 - The id of the Hardware Set to get.
+
+SELECT *
+FROM hardware_sets
+WHERE id = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
 pub fn get_hardware_sets(
   db: sqlight.Connection,
   arguments: List(sqlight.Value),
@@ -84,6 +101,19 @@ SELECT hs.id, hs.projectid, hs.name, hs.capacity, hs.available
 FROM hardware_sets hs
 INNER JOIN projects p ON hs.projectid = p.projectid
 WHERE hs.projectid = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn get_last_rowid(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Used right after create_hardware_set.sql. Not sure why we can't batch queries with SQLight out of the box...
+
+SELECT last_insert_rowid();"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }

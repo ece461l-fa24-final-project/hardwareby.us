@@ -2,8 +2,10 @@ import backend
 import backend/db
 import backend/router
 import backend/web
+import gleam/int
 import gleam/io
 import gleam/json.{type Json}
+import gleam/result
 import gleam/string_builder
 import gleeunit
 import gleeunit/should
@@ -337,7 +339,7 @@ pub fn project_api_get_projects_test() {
   ))
 }
 
-pub fn hardware_api_get_hardware_sets_test() {
+pub fn hardware_api_get_hardware_set_test() {
   use ctx <- with_context
   use <- with_logger
   use token <- with_bearer_token(ctx)
@@ -402,27 +404,29 @@ pub fn hardware_api_get_hardware_sets_test() {
   response.status
   |> should.equal(201)
 
-  // Get hardware sets for project with only 1 set.
-  let request = testing.get("/api/v1/hardware/bar", [#("authorization", token)])
+  let set_id = testing.string_body(response)
+
+  // Get hardware set using returned id.
+  let request =
+    testing.get("/api/v1/hardware/" <> set_id, [#("authorization", token)])
   let response = router.handle_request(request, ctx)
 
   response.status
   |> should.equal(200)
 
+  let set_id =
+    int.parse(set_id)
+    |> result.unwrap(or: -1)
+
   response.body
   |> should.equal(wisp.Text(
-    json.array(
-      from: [web.HardwareSet(3, "bar", "foo", 100, 100)],
-      of: fn(hardware_set: web.HardwareSet) -> Json {
-        json.object([
-          #("id", json.int(hardware_set.id)),
-          #("projectid", json.string(hardware_set.projectid)),
-          #("name", json.string(hardware_set.name)),
-          #("capacity", json.int(hardware_set.capacity)),
-          #("available", json.int(hardware_set.available)),
-        ])
-      },
-    )
+    json.object([
+      #("id", json.int(set_id)),
+      #("projectid", json.string("bar")),
+      #("name", json.string("foo")),
+      #("capacity", json.int(100)),
+      #("available", json.int(100)),
+    ])
     |> json.to_string_builder,
   ))
 }

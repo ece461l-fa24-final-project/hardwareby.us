@@ -157,23 +157,17 @@ pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
 
   case route {
     [] -> {
-      case req.method {
-        Post -> {
-          use params <- get_required_query(req, ["projectid", "name"])
-          let assert [projectid, name] = params
+      use <- wisp.require_method(req, http.Post)
+      use params <- get_required_query(req, ["projectid", "name"])
+      let assert [projectid, name] = params
 
-          hardware.create_hardware_set(projectid, name, jwt, ctx)
-        }
-        _ -> wisp.method_not_allowed(allowed: [http.Post])
-      }
+      hardware.create_hardware_set(projectid, name, jwt, ctx)
     }
-    [projectid] -> {
-      case req.method {
-        Get -> {
-          hardware.get_hardware_sets(projectid, jwt, ctx)
-        }
-        _ -> wisp.method_not_allowed(allowed: [http.Get])
-      }
+    [hardwaresetid] -> {
+      use <- wisp.require_method(req, http.Get)
+      int.parse(hardwaresetid)
+      |> result.map(fn(id: Int) { hardware.get_hardware_set(id, jwt, ctx) })
+      |> result.unwrap(or: wisp.bad_request())
     }
     _ -> wisp.bad_request()
   }
