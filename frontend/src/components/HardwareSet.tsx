@@ -1,8 +1,7 @@
 import { Token } from "../contexts/Auth.tsx";
-import { HardwareSet } from "../utils/types.ts";
 import { useState } from "react";
 import call, { Method } from "../utils/api.ts";
-import "../styles/HardwareSetComponent.css";
+import "../styles/HardwareSet.css";
 
 enum ErrorType {
     None = "",
@@ -12,6 +11,14 @@ enum ErrorType {
 interface HardwareSetComponentProps {
     token: Token;
     hardwareSet: HardwareSet;
+}
+
+export interface HardwareSet {
+    id: number;
+    projectid: string;
+    name: string;
+    capacity: number;
+    available: number;
 }
 
 export default function HardwareSetComponent({
