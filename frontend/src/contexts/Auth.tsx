@@ -18,10 +18,19 @@ export const AuthContext = createContext<TokenContext | null>(null);
 export default function AuthProvider({
     children,
 }: Readonly<{ children: ReactNode }>) {
-    const [token, setToken] = useState<Token | null>(null);
+    const existingToken = localStorage.getItem("Authorization");
+    const [token, setToken] = useState<Token | null>(
+        existingToken ? { data: existingToken } : null,
+    );
 
-    const login = (token: Token) => setToken(token);
-    const logout = () => setToken(null);
+    const login = (token: Token) => {
+        setToken(token);
+        localStorage.setItem("Authorization", token.data);
+    };
+    const logout = () => {
+        setToken(null);
+        localStorage.setItem("Authorization", "");
+    };
 
     return (
         <AuthContext.Provider value={{ token: token, login, logout }}>

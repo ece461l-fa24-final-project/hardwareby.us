@@ -24,17 +24,16 @@ pub fn handle_request(
   use _req <- middleware(req, ctx)
 
   case wisp.path_segments(req) {
-    [] -> {
+    ["api", "v1", "auth", ..] -> auth(req, ctx)
+    ["api", "v1", "project", ..] -> project(req, ctx)
+    ["api", "v1", "hardware", ..] -> hardware(req, ctx)
+    _ -> {
       let index = case simplifile.read(ctx.static_directory <> "/index.html") {
         Ok(file) -> file
         _ -> "Hello, Joe!"
       }
       wisp.html_response(string_builder.from_string(index), 200)
     }
-    ["api", "v1", "auth", ..] -> auth(req, ctx)
-    ["api", "v1", "project", ..] -> project(req, ctx)
-    ["api", "v1", "hardware", ..] -> hardware(req, ctx)
-    _ -> wisp.not_found()
   }
 }
 
