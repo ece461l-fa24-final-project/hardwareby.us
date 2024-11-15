@@ -66,6 +66,7 @@ export default function HardwareSet({ token, id }: Readonly<HardwareSetProps>) {
             })
             .finally(() => {
                 setQuantity(1);
+                window.location.reload();
             });
     };
 
@@ -85,6 +86,7 @@ export default function HardwareSet({ token, id }: Readonly<HardwareSetProps>) {
             })
             .finally(() => {
                 setQuantity(1);
+                window.location.reload();
             });
     };
 
