@@ -42,7 +42,15 @@ export default function LoginView() {
 
     return (
         <>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", marginTop: "200px" }}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: "200px",
+                }}
+            >
                 <h1>Login to Hardware By Us!</h1>
                 <UserForm submit={onSubmit} label="Log In" />
                 <button
