@@ -17,8 +17,13 @@ pub type Project {
   Project(projectid: String, name: String, description: String)
 }
 
-pub type UserProject {
-  UserProject(userid: String, projectid: String)
+pub type DetailedProject {
+  DetailedProject(
+    id: String,
+    name: String,
+    description: String,
+    hardware: List(Int),
+  )
 }
 
 pub type HardwareSet {
