@@ -13,6 +13,11 @@ label {
     margin-bottom: 10px;
 }
 
+.project-list-title {
+    font-size: 36px;
+    color: white;
+}
+
 input[type="text"],
 textarea {
     width: 100%;

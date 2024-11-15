@@ -29,7 +29,7 @@ export default function ProjectsView({ token }: Readonly<ProjectsViewProps>) {
 
     return (
         <div className="container">
-            <div className="project-controls"> 
+            <div className="project-controls">
                 <CreateProjectDialog token={token} />
                 <JoinProjectDialog token={token} />
             </div>
