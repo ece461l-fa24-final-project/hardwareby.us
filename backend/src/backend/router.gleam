@@ -117,10 +117,10 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
     }
     [projectid] -> {
       case req.method {
-        // Get -> {
-        //   // Get details for a specific project
-        //   wisp.response(501)
-        // }
+        Get -> {
+          // Get details for a specific project
+          project.get_project(projectid, jwt, ctx)
+        }
         Post -> {
           // Create a new project
           use params <- get_required_query(req, ["name", "description"])
@@ -142,7 +142,7 @@ pub fn project(req: wisp.Request, ctx: Context) -> wisp.Response {
         //   wisp.response(501)
         // }
         // XXX: Add other api calls later
-        _ -> wisp.method_not_allowed(allowed: [http.Post])
+        _ -> wisp.method_not_allowed(allowed: [http.Get, http.Post, http.Put])
       }
     }
     _ -> wisp.bad_request()
