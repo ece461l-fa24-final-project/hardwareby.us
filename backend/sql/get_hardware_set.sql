@@ -1,5 +1,4 @@
--- This is used in checkin/checkout to verify that the operation is valid before updating the column.
--- I think this can technically be done in SQL, but I'm not sure how to return specifically an error if the query is invalid.
+-- Used for GET hardware/id as well checkin/checkout for sanity checking purposes.
 -- Parameters:
 -- ?1 - The id of the Hardware Set to get.
 

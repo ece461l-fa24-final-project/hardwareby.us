@@ -24,17 +24,16 @@ pub fn handle_request(
   use _req <- middleware(req, ctx)
 
   case wisp.path_segments(req) {
-    [] -> {
+    ["api", "v1", "auth", ..] -> auth(req, ctx)
+    ["api", "v1", "project", ..] -> project(req, ctx)
+    ["api", "v1", "hardware", ..] -> hardware(req, ctx)
+    _ -> {
       let index = case simplifile.read(ctx.static_directory <> "/index.html") {
         Ok(file) -> file
         _ -> "Hello, Joe!"
       }
       wisp.html_response(string_builder.from_string(index), 200)
     }
-    ["api", "v1", "auth", ..] -> auth(req, ctx)
-    ["api", "v1", "project", ..] -> project(req, ctx)
-    ["api", "v1", "hardware", ..] -> hardware(req, ctx)
-    _ -> wisp.not_found()
   }
 }
 
@@ -157,19 +156,17 @@ pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
 
   case route {
     [] -> {
-      case req.method {
-        Post -> {
-          use params <- get_required_query(req, ["projectid", "name"])
-          let assert [projectid, name] = params
+      use <- wisp.require_method(req, http.Post)
+      use params <- get_required_query(req, ["projectid", "name"])
+      let assert [projectid, name] = params
 
-          hardware.create_hardware_set(
-            web.HardwareSet(-1, projectid, name, 100, 100),
-            jwt,
-            ctx,
-          )
-        }
-        _ -> wisp.method_not_allowed(allowed: [http.Post])
-      }
+      hardware.create_hardware_set(projectid, name, jwt, ctx)
+    }
+    [hardwaresetid] -> {
+      use <- wisp.require_method(req, http.Get)
+      int.parse(hardwaresetid)
+      |> result.map(fn(id: Int) { hardware.get_hardware_set(id, jwt, ctx) })
+      |> result.unwrap(or: wisp.bad_request())
     }
     ["checkout", setid] -> {
       case req.method {

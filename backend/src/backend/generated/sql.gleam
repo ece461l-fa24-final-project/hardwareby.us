@@ -25,38 +25,6 @@ VALUES (?2, ?1);"
   |> result.map_error(error.DatabaseError)
 }
 
-pub fn check_user(
-  db: sqlight.Connection,
-  arguments: List(sqlight.Value),
-  decoder: dynamic.Decoder(a),
-) -> QueryResult(a) {
-  let query =
-    "-- Parameters:
--- ?1 - The user's login ID
--- ?2 - The password to check
--- Note: The password should be hashed using the same algorithm used to create password_hash
--- before being used in this query
-
-select 
-    password_hash = ?2
-from users 
-where userid = ?1
-limit 1;
-
--- If authentication succeeds, update last_login timestamp
-update users 
-set last_login = CURRENT_TIMESTAMP
-where userid = ?1
-and exists (
-    select 1 
-    from users 
-    where userid = ?1
-    and password_hash = ?2
-);"
-  sqlight.query(query, db, arguments, decoder)
-  |> result.map_error(error.DatabaseError)
-}
-
 pub fn create_hardware_set(
   db: sqlight.Connection,
   arguments: List(sqlight.Value),
@@ -109,14 +77,43 @@ pub fn get_hardware_set(
   decoder: dynamic.Decoder(a),
 ) -> QueryResult(a) {
   let query =
-    "-- This is used in checkin/checkout to verify that the operation is valid before updating the column.
--- I think this can technically be done in SQL, but I'm not sure how to return specifically an error if the query is invalid.
+    "-- Used for GET hardware/id as well checkin/checkout for sanity checking purposes.
 -- Parameters:
 -- ?1 - The id of the Hardware Set to get.
 
 SELECT *
 FROM hardware_sets
 WHERE id = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn get_hardware_sets(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters:
+-- ?1 - The projectid of the project to grab associated sets of.
+
+SELECT hs.id, hs.projectid, hs.name, hs.capacity, hs.available
+FROM hardware_sets hs
+INNER JOIN projects p ON hs.projectid = p.projectid
+WHERE hs.projectid = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn get_last_rowid(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Used right after create_hardware_set.sql. Not sure why we can't batch queries with SQLight out of the box...
+
+SELECT last_insert_rowid();"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }
@@ -134,6 +131,22 @@ SELECT p.projectid, p.name, p.description
 FROM projects p
 INNER JOIN user_projects up on p.projectid = up.projectid
 WHERE up.userid = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn get_user(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters:
+-- ?1 - The userid of the user
+
+SELECT userid, password_hash
+FROM users
+WHERE userid = ?1;"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }
