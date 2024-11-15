@@ -215,3 +215,20 @@ pub fn get_hardware_sets(
   use returned <- result.then(res)
   Ok(returned)
 }
+
+pub fn update_hardware_set_capacity(
+  db: web.Connection,
+  set_id: Int,
+  capacity: Int,
+) -> Result(Nil, Error) {
+  let params = [sqlight.int(set_id), sqlight.int(capacity)]
+  let decoder = fn(dyn: Dynamic) { Ok(Nil) }
+  let res = sql.update_hardware_set_capacity(db.inner, params, decoder)
+
+  wisp.log_info("DB update_hardware_set_capacity " <> string.inspect(res))
+
+  use returned <- result.then(res)
+  let assert [] = returned
+
+  Ok(Nil)
+}

@@ -175,3 +175,20 @@ WHERE userid = ?1;"
   sqlight.query(query, db, arguments, decoder)
   |> result.map_error(error.DatabaseError)
 }
+
+pub fn update_hardware_set_capacity(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters:
+-- ?1 - The id of the Hardware Set to update.
+-- ?2 - The new availability of the set.
+
+UPDATE hardware_sets
+SET available = ?2
+WHERE id = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}

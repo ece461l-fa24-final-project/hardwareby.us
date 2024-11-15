@@ -168,6 +168,28 @@ pub fn hardware(req: wisp.Request, ctx: Context) -> wisp.Response {
       |> result.map(fn(id: Int) { hardware.get_hardware_set(id, jwt, ctx) })
       |> result.unwrap(or: wisp.bad_request())
     }
+    ["checkout", setid] -> {
+      use <- wisp.require_method(req, http.Put)
+      use params <- get_required_query(req, ["count"])
+      let assert [count] = params
+
+      case int.parse(setid), int.parse(count) {
+        Ok(setid), Ok(count) ->
+          hardware.checkout_hardware_set(setid, count, jwt, ctx)
+        _, _ -> wisp.bad_request()
+      }
+    }
+    ["checkin", setid] -> {
+      use <- wisp.require_method(req, http.Put)
+      use params <- get_required_query(req, ["count"])
+      let assert [count] = params
+
+      case int.parse(setid), int.parse(count) {
+        Ok(setid), Ok(count) ->
+          hardware.checkin_hardware_set(setid, count, jwt, ctx)
+        _, _ -> wisp.bad_request()
+      }
+    }
     _ -> wisp.bad_request()
   }
 }
