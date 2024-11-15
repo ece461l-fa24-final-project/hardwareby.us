@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import "../styles/CreateProjectDialog.css";
-import { useParams } from "react-router";
 import call, { Method } from "../utils/api";
 import { Token } from "../contexts/Auth";
 import HardwareSet from "../components/HardwareSet.tsx";
+import "../styles/ProjectList.css";
+import "../styles/ProjectView.css";
 
 // Define an enum for error types
 enum ErrorType {
@@ -21,12 +22,12 @@ interface Project {
 
 interface ProjectViewProps {
     token: Token;
+    id: string;
 }
 
-export default function ProjectView({ token }: Readonly<ProjectViewProps>) {
-    const { projectId } = useParams<{ projectId: string }>();
+export default function Project({ token, id }: Readonly<ProjectViewProps>) {
     const [project, setProject] = useState<Project>({
-        id: "",
+        id: id,
         name: "",
         description: "",
         hardware: [],
@@ -34,10 +35,11 @@ export default function ProjectView({ token }: Readonly<ProjectViewProps>) {
     const [error, setError] = useState<ErrorType>(ErrorType.None);
 
     useEffect(() => {
-        call(`/api/projects/${projectId}`, Method.Get, token)
+        call(`/project/${id}`, Method.Get, token)
             .then((response) => {
                 if (!response.ok) {
                     setError(ErrorType.PageOpenError);
+                    console.error(response);
                     return error; //return 404
                 }
                 return response.json();
@@ -46,29 +48,21 @@ export default function ProjectView({ token }: Readonly<ProjectViewProps>) {
                 setProject(data);
                 setError(ErrorType.None);
             })
-            .catch(() => {
-                setError(ErrorType.PageOpenError); //Not a project data type
+            .catch((err) => {
+                console.error(err);
             });
-    }, [projectId]);
+    }, [id]);
+
+    if (error) return <>{error}</>;
 
     return (
-        <div className="project-view">
-            <h1>Project View</h1>
-            <div>
-                <h2>Project Information</h2>
-                <p>Project ID: {projectId}</p> {/* Displaying projectId */}
-                <p>Project Name: {project.name}</p>{" "}
-                {/* Displaying projectName */}
-                <p>Description: {project.description}</p>{" "}
-                {/* Displaying description */}
-            </div>
-            <div>
-                <h2>Hardware Information</h2>
-                {error && <p className="error">{error}</p>}
-                {project.hardware.map((hwId) => (
-                    <HardwareSet key={hwId} id={hwId} token={token} />
-                ))}
-            </div>
-        </div>
+        <li className="project-card">
+            <h3>{project.name}</h3>
+            <p>Project ID: {id}</p>
+            <p>{project.description}</p>
+            {project.hardware?.map((hwId) => (
+                <HardwareSet key={hwId} id={hwId} token={token} />
+            ))}
+        </li>
     );
 }
