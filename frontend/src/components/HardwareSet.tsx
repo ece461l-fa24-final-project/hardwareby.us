@@ -1,19 +1,20 @@
 import { Token } from "../contexts/Auth.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import call, { Method } from "../utils/api.ts";
 import "../styles/HardwareSet.css";
 
 enum ErrorType {
     None = "",
     InvalidOperation = "The quantity you attempted to check in/out is invalid. Please try again.",
+    ItExploded = "It Exploded",
 }
 
-interface HardwareSetComponentProps {
+interface HardwareSetProps {
     token: Token;
-    hardwareSet: HardwareSet;
+    id: number;
 }
 
-export interface HardwareSet {
+export interface Hardware {
     id: number;
     projectid: string;
     name: string;
@@ -21,23 +22,43 @@ export interface HardwareSet {
     available: number;
 }
 
-export default function HardwareSetComponent({
-    token,
-    hardwareSet,
-}: Readonly<HardwareSetComponentProps>) {
+export default function HardwareSet({ token, id }: Readonly<HardwareSetProps>) {
     const [quantity, setQuantity] = useState(1);
-    const availablePercent =
-        (hardwareSet.available / hardwareSet.capacity) * 100;
+    const [hardware, setHardware] = useState<Hardware>({
+        id: id,
+        projectid: "",
+        name: "",
+        capacity: 100,
+        available: 100,
+    });
+    const availablePercent = (hardware.available / hardware.capacity) * 100;
+
+    useEffect(() => {
+        call(`hardware/${encodeURIComponent(id)}`, Method.Get, token)
+            .then((response) => {
+                if (!response.ok) {
+                    alert(ErrorType.ItExploded);
+                    throw new Error(ErrorType.ItExploded);
+                }
+                return response.json();
+            })
+            .then((data: Hardware) => {
+                setHardware(data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [id]);
 
     const handleCheckOut = () => {
         call(
-            `hardware/checkout/${encodeURIComponent(hardwareSet.id)}?count=${encodeURIComponent(quantity)}`,
+            `hardware/checkout/${encodeURIComponent(hardware.id)}?count=${encodeURIComponent(quantity)}`,
             Method.Put,
             token,
         )
             .then((response) => {
                 if (!response.ok) {
-                    console.error(ErrorType.InvalidOperation);
+                    alert(ErrorType.InvalidOperation);
                 }
             })
             .catch((err) => {
@@ -50,13 +71,13 @@ export default function HardwareSetComponent({
 
     const handleCheckIn = () => {
         call(
-            `hardware/checkin/${encodeURIComponent(hardwareSet.id)}?count=${encodeURIComponent(quantity)}`,
+            `hardware/checkin/${encodeURIComponent(hardware.id)}?count=${encodeURIComponent(quantity)}`,
             Method.Put,
             token,
         )
             .then((response) => {
                 if (!response.ok) {
-                    console.error(ErrorType.InvalidOperation);
+                    alert(ErrorType.InvalidOperation);
                 }
             })
             .catch((err) => {
@@ -68,48 +89,46 @@ export default function HardwareSetComponent({
     };
 
     return (
-        <>
-            <div className="hardwareset-container">
-                <div className="capacity-bar-container">
-                    <div className="hardwareset-title">{hardwareSet.name}</div>
-                    <div className="capacity-bar">
-                        <div
-                            className="capacity-bar-fill"
-                            style={{ width: `${availablePercent}%` }}
-                        />
-                    </div>
-                    <div className="availability-label">
-                        Availability: {hardwareSet.available.toString()}/
-                        {hardwareSet.capacity.toString()}
-                    </div>
+        <div className="hardwareset-container">
+            <div className="capacity-bar-container">
+                <div className="hardwareset-title">{hardware.name}</div>
+                <div className="capacity-bar">
+                    <div
+                        className="capacity-bar-fill"
+                        style={{ width: `${availablePercent}%` }}
+                    />
                 </div>
-                <div className="controls-container">
-                    <label
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            marginRight: "10px",
-                        }}
-                    >
-                        Quantity:
-                        <input
-                            type="number"
-                            value={quantity}
-                            onChange={(e) =>
-                                setQuantity(
-                                    Math.max(1, parseInt(e.target.value) || 1),
-                                )
-                            }
-                            min="1"
-                            required
-                        />
-                    </label>
-                    <div style={{ flexDirection: "column" }}>
-                        <button onClick={handleCheckOut}>Check Out</button>
-                        <button onClick={handleCheckIn}>Check In</button>
-                    </div>
+                <div className="availability-label">
+                    Availability: {hardware.available.toString()}/
+                    {hardware.capacity.toString()}
                 </div>
             </div>
-        </>
+            <div className="controls-container">
+                <label
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        marginRight: "10px",
+                    }}
+                >
+                    Quantity:
+                    <input
+                        type="number"
+                        value={quantity}
+                        onChange={(e) =>
+                            setQuantity(
+                                Math.max(1, parseInt(e.target.value) || 1),
+                            )
+                        }
+                        min="1"
+                        required
+                    />
+                </label>
+                <div style={{ flexDirection: "column" }}>
+                    <button onClick={handleCheckOut}>Check Out</button>
+                    <button onClick={handleCheckIn}>Check In</button>
+                </div>
+            </div>
+        </div>
     );
 }

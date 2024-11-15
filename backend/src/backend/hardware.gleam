@@ -56,7 +56,8 @@ pub fn get_hardware_set(
     |> wisp.json_response(200)
   }
 
-  Ok(set_id)
+  gwt.get_subject(jwt)
+  |> result.map(fn(_) { set_id })
   |> result.map(mapper)
   |> result.unwrap(or: wisp.response(401))
 }
@@ -94,7 +95,8 @@ pub fn get_hardware_sets(
     |> wisp.json_response(200)
   }
 
-  Ok(projectid)
+  gwt.get_subject(jwt)
+  |> result.map(fn(_) { projectid })
   |> result.map(mapper)
   |> result.unwrap(or: wisp.response(401))
 }

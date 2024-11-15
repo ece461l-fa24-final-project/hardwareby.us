@@ -8,26 +8,21 @@ import SignupView from "./views/SignupView.tsx";
 
 export default function App() {
     return (
-        <>
-            <AuthProvider>
-                <Navbar />
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<Navigate to="/projects" replace />}
-                    />
-                    <Route path="/login" element={<LoginView />} />
-                    <Route path="/signup" element={<SignupView />} />
-                    <Route
-                        path="/projects"
-                        element={
-                            <ProtectedRoute>
-                                <ProjectsView />
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
-            </AuthProvider>
-        </>
+        <AuthProvider>
+            <Navbar />
+            <Routes>
+                <Route path="/" element={<Navigate to="/projects" replace />} />
+                <Route path="/login" element={<LoginView />} />
+                <Route path="/signup" element={<SignupView />} />
+                <Route
+                    path="/projects"
+                    element={
+                        <ProtectedRoute>
+                            <ProjectsView />
+                        </ProtectedRoute>
+                    }
+                />
+            </Routes>
+        </AuthProvider>
     );
 }

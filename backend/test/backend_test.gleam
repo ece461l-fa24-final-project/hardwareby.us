@@ -2,6 +2,7 @@ import backend
 import backend/db
 import backend/router
 import backend/web
+import gleam/http/response
 import gleam/int
 import gleam/io
 import gleam/json.{type Json}
@@ -335,6 +336,42 @@ pub fn project_api_get_projects_test() {
         ])
       },
     )
+    |> json.to_string_builder,
+  ))
+}
+
+pub fn project_api_get_project_test() {
+  use ctx <- with_context
+  use <- with_logger
+  use token <- with_bearer_token(ctx)
+
+  // Create a project
+  let request =
+    testing.post(
+      "/api/v1/project/foo?name=Foo&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Get the project
+  let request = testing.get("/api/v1/project/foo", [#("authorization", token)])
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(200)
+
+  response.body
+  |> should.equal(wisp.Text(
+    json.object([
+      #("projectid", json.string("foo")),
+      #("name", json.string("Foo")),
+      #("description", json.string("bar")),
+      #("hardware", json.array([], of: json.int)),
+    ])
     |> json.to_string_builder,
   ))
 }
