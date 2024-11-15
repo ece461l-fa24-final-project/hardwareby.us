@@ -1,12 +1,12 @@
 .project-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
     align-items: center;
 }
 
 .project-card {
     padding: 1rem;
+    margin-bottom: 15px;
     background-color: white;
     border-radius: 0.3rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
