@@ -3,6 +3,7 @@ import backend/generated/sql
 import backend/web
 import gleam/dynamic.{type Dynamic} as dyn
 import gleam/list
+import gleam/option
 import gleam/result
 import gleam/string
 import simplifile
@@ -118,7 +119,7 @@ pub fn get_project(
       dyn.element(0, dyn.string),
       dyn.element(1, dyn.string),
       dyn.element(2, dyn.string),
-      dyn.element(3, dyn.list(of: dyn.int)),
+      dyn.element(3, decode_hardware),
       // TODO: handle case when a project doesn't have hardware
     )
   let params = [sqlight.text(projectid), sqlight.text(userid)]
@@ -129,6 +130,13 @@ pub fn get_project(
   use returned <- result.then(res)
   let assert [proj] = returned
   Ok(proj)
+}
+
+fn decode_hardware(dyn: Dynamic) -> Result(List(Int), List(dyn.DecodeError)) {
+  wisp.log_info(string.inspect(dyn))
+  dyn
+  |> dyn.optional(dyn.list(of: dyn.int))
+  |> result.map(fn(optional_list) { optional_list |> option.unwrap(or: []) })
 }
 
 pub fn create_hardware_set(

@@ -369,7 +369,7 @@ pub fn project_api_get_project_test() {
     json.object([
       #("projectid", json.string("foo")),
       #("name", json.string("Foo")),
-      #("description", json.string("Bar")),
+      #("description", json.string("bar")),
       #("hardware", json.array([], of: json.int)),
     ])
     |> json.to_string_builder,
