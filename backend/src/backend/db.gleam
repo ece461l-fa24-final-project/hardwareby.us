@@ -176,29 +176,6 @@ pub fn get_hardware_sets(
   Ok(returned)
 }
 
-pub fn get_hardware_set(
-  db: web.Connection,
-  set_id: Int,
-) -> Result(web.HardwareSet, Error) {
-  let params = [sqlight.int(set_id)]
-  let decoder =
-    dyn.decode5(
-      web.HardwareSet,
-      dyn.element(0, dyn.int),
-      dyn.element(1, dyn.string),
-      dyn.element(2, dyn.string),
-      dyn.element(3, dyn.int),
-      dyn.element(4, dyn.int),
-    )
-  let res = sql.get_hardware_set(db.inner, params, decoder)
-
-  wisp.log_info("DB get_hardware_set " <> string.inspect(res))
-
-  use returned <- result.then(res)
-  list.first(returned)
-  |> result.map_error(NotFoundError)
-}
-
 pub fn update_hardware_set_capacity(
   db: web.Connection,
   set_id: Int,
