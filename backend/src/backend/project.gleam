@@ -14,15 +14,9 @@ pub fn create_project(
     db.create_project(ctx.db, project, userid)
     |> result.map(fn(_) {
       let _ =
-        db.create_hardware_set(
-          ctx.db,
-          web.HardwareSet(project.projectid, "Hardware Set 1", 100, 100),
-        )
+        db.create_hardware_set(ctx.db, project.projectid, "Hardware Set 1")
       let _ =
-        db.create_hardware_set(
-          ctx.db,
-          web.HardwareSet(project.projectid, "Hardware Set 2", 100, 100),
-        )
+        db.create_hardware_set(ctx.db, project.projectid, "Hardware Set 2")
       wisp.response(201)
     })
     |> result.unwrap(or: wisp.bad_request())

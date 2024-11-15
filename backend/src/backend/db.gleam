@@ -2,6 +2,7 @@ import backend/error.{type Error, NotFoundError}
 import backend/generated/sql
 import backend/web
 import gleam/dynamic.{type Dynamic} as dyn
+import gleam/int
 import gleam/list
 import gleam/option
 import gleam/result
@@ -134,8 +135,16 @@ pub fn get_project(
 fn decode_hardware(dyn: Dynamic) -> Result(List(Int), List(dyn.DecodeError)) {
   wisp.log_info(string.inspect(dyn))
   dyn
-  |> dyn.optional(dyn.list(of: dyn.int))
-  |> result.map(fn(optional_list) { optional_list |> option.unwrap(or: []) })
+  |> dyn.optional(dyn.string)
+  |> result.map(fn(optional_string) {
+    optional_string
+    |> option.unwrap(or: "")
+    |> string.split(on: ",")
+    |> list.map(fn(id: String) {
+      int.parse(id)
+      |> result.unwrap(or: -1)
+    })
+  })
 }
 
 pub fn create_hardware_set(
