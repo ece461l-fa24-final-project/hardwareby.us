@@ -22,5 +22,11 @@ pub type UserProject {
 }
 
 pub type HardwareSet {
-  HardwareSet(projectid: String, name: String, capacity: Int, available: Int)
+  HardwareSet(
+    id: Int,
+    projectid: String,
+    name: String,
+    capacity: Int,
+    available: Int,
+  )
 }

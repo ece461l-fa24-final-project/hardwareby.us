@@ -3,7 +3,6 @@ import backend/web
 import beecrypt
 import birl
 import gleam/erlang/os
-import gleam/io
 import gleam/result
 import gleam/string
 import gleam/string_builder
