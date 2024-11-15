@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar.tsx";
 import LoginView from "./views/LoginView.tsx";
 import ProjectsView from "./views/ProjectsView.tsx";
 import AuthProvider from "./contexts/Auth.tsx";
@@ -9,6 +10,7 @@ export default function App() {
     return (
         <>
             <AuthProvider>
+                <Navbar />
                 <Routes>
                     <Route
                         path="/"
