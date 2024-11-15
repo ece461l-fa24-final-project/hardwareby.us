@@ -50,6 +50,7 @@ export default function CreateProjectDialog({
             })
             .finally(() => {
                 closeDialog();
+                window.location.reload();
             });
     };
 

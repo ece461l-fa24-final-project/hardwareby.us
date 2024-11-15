@@ -68,6 +68,7 @@ export default function JoinProjectDialog({
             )
             .finally(() => {
                 closeDialog();
+                window.location.reload();
             });
     };
 
