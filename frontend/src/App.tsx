@@ -5,6 +5,7 @@ import ProjectsView from "./views/ProjectsView.tsx";
 import AuthProvider from "./contexts/Auth.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import SignupView from "./views/SignupView.tsx";
+import ProjectView from "./views/ProjectView.tsx";
 
 export default function App() {
     return (
@@ -23,6 +24,14 @@ export default function App() {
                         element={
                             <ProtectedRoute>
                                 <ProjectsView />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/project/:projectId"
+                        element={
+                            <ProtectedRoute>
+                                <ProjectView />
                             </ProtectedRoute>
                         }
                     />

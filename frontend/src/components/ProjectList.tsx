@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "../styles/ProjectList.css";
 import { Token } from "../contexts/Auth.tsx";
 import call, { Method } from "../utils/api.ts";
+import { useNavigate } from "react-router-dom";
 
 interface Project {
     projectid: string;
@@ -9,14 +10,13 @@ interface Project {
     description: string;
 }
 
-const initialState: Project[] = [];
-
 interface ProjectListProps {
     token: Token;
 }
 
 export default function ProjectList({ token }: Readonly<ProjectListProps>) {
-    const [projects, setProjects] = useState<Project[]>(initialState);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         let fetched = false;
@@ -40,7 +40,15 @@ export default function ProjectList({ token }: Readonly<ProjectListProps>) {
                         <h3>{project.name}</h3>
                         <p>Project ID: {project.projectid}</p>
                         <p>{project.description}</p>
-                        <button>View Project</button>
+                        <button
+                            onClick={() =>
+                                navigate(
+                                    `/project/${encodeURIComponent(project.projectid)}`,
+                                )
+                            }
+                        >
+                            View Project
+                        </button>
                     </li>
                 ))}
             </ul>
