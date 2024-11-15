@@ -12,7 +12,13 @@ pub fn create_project(
 ) -> wisp.Response {
   let mapper = fn(userid: String) {
     db.create_project(ctx.db, project, userid)
-    |> result.map(fn(_) { wisp.response(201) })
+    |> result.map(fn(_) {
+      let _ =
+        db.create_hardware_set(ctx.db, project.projectid, "Hardware Set 1")
+      let _ =
+        db.create_hardware_set(ctx.db, project.projectid, "Hardware Set 2")
+      wisp.response(201)
+    })
     |> result.unwrap(or: wisp.bad_request())
   }
 

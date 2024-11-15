@@ -370,7 +370,7 @@ pub fn project_api_get_project_test() {
       #("projectid", json.string("foo")),
       #("name", json.string("Foo")),
       #("description", json.string("bar")),
-      #("hardware", json.array([], of: json.int)),
+      #("hardware", json.array([1, 2], of: json.int)),
     ])
     |> json.to_string_builder,
   ))
