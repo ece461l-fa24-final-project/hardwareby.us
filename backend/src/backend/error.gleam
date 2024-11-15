@@ -6,4 +6,5 @@ pub type Error {
   FileError(simplifile.FileError)
   DatabaseError(sqlight.Error)
   JsonDecodeError(json.DecodeError)
+  NotFoundError(Nil)
 }
