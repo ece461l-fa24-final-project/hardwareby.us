@@ -42,9 +42,24 @@ export default function LoginView() {
 
     return (
         <>
-            <h1>Login to Hardware By Us!</h1>
-            <UserForm submit={onSubmit} label="Log In" />
-            <button onClick={() => navigate("/signup")}>Signup</button>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: "200px",
+                }}
+            >
+                <h1>Login to Hardware By Us!</h1>
+                <UserForm submit={onSubmit} label="Log In" />
+                <button
+                    style={{ width: "50%" }}
+                    onClick={() => navigate("/signup")}
+                >
+                    Signup
+                </button>
+            </div>
         </>
     );
 }

@@ -56,13 +56,13 @@ export default function Project({ token, id }: Readonly<ProjectViewProps>) {
     if (error) return <>{error}</>;
 
     return (
-        <li className="project-card">
+        <div className="project-card">
             <h3>{project.name}</h3>
             <p>Project ID: {id}</p>
             <p>{project.description}</p>
             {project.hardware?.map((hwId) => (
                 <HardwareSet key={hwId} id={hwId} token={token} />
             ))}
-        </li>
+        </div>
     );
 }

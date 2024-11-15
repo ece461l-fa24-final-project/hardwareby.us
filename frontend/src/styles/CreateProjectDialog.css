@@ -43,11 +43,13 @@ textarea {
 
 button {
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background-color: green;
-    color: black;
-    font-display: bold;
+    font-size: 0.9rem;
+    background-color: orange;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 .button {
     width: 100%;

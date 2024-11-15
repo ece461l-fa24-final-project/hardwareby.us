@@ -36,9 +36,24 @@ export default function SignupView() {
 
     return (
         <>
-            <h1>Signup for Hardware By Us!</h1>
-            <UserForm submit={onSubmit} label="Sign Up" />
-            <button onClick={() => navigate("/signup")}>Login</button>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: "200px",
+                }}
+            >
+                <h1>Signup for Hardware By Us!</h1>
+                <UserForm submit={onSubmit} label="Sign Up" />
+                <button
+                    style={{ width: "50%" }}
+                    onClick={() => navigate("/login")}
+                >
+                    Login
+                </button>
+            </div>
         </>
     );
 }

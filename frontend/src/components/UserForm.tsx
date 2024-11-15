@@ -14,6 +14,7 @@ export default function UserForm({ submit, label }: Readonly<UserFormProps>) {
 
     return (
         <form
+            style={{ width: "50%" }}
             onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
 

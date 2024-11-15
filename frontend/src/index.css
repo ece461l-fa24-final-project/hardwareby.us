@@ -24,9 +24,6 @@ a:hover {
 
 body {
     margin: 0;
-    display: flex;
-    place-items: center;
-    justify-content: center;
     min-width: 320px;
     min-height: 100vh;
 }
@@ -37,10 +34,10 @@ h1 {
 }
 
 #root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 input[type="text"],
@@ -59,17 +56,4 @@ textarea {
     margin-top: 5px;
     border: 1px solid #0d0c0c;
     border-radius: 4px;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
-    a:hover {
-        color: #747bff;
-    }
-    button {
-        background-color: #f9f9f9;
-    }
 }
