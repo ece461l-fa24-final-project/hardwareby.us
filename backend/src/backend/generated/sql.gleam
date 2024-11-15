@@ -71,6 +71,78 @@ VALUES (?, ?)"
   |> result.map_error(error.DatabaseError)
 }
 
+pub fn get_hardware_set(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Used for GET hardware/id as well checkin/checkout for sanity checking purposes.
+-- Parameters:
+-- ?1 - The id of the Hardware Set to get.
+
+SELECT *
+FROM hardware_sets
+WHERE id = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn get_hardware_sets(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters:
+-- ?1 - The projectid of the project to grab associated sets of.
+
+SELECT hs.id, hs.projectid, hs.name, hs.capacity, hs.available
+FROM hardware_sets hs
+INNER JOIN projects p ON hs.projectid = p.projectid
+WHERE hs.projectid = ?1;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn get_last_rowid(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Used right after create_hardware_set.sql. Not sure why we can't batch queries with SQLight out of the box...
+
+SELECT last_insert_rowid();"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
+pub fn get_project(
+  db: sqlight.Connection,
+  arguments: List(sqlight.Value),
+  decoder: dynamic.Decoder(a),
+) -> QueryResult(a) {
+  let query =
+    "-- Parameters
+-- ?1 - The projectid to query
+-- ?2 - The user who is requesting the information
+
+SELECT 
+    p.projectid,
+    p.name,
+    p.description,
+    GROUP_CONCAT(h.id) as hardware_set_ids
+FROM projects p
+INNER JOIN user_projects up ON p.projectid = up.projectid
+LEFT JOIN hardware_sets h ON p.projectid = h.projectid
+WHERE p.projectid = ?1 
+AND up.userid = ?2
+GROUP BY p.projectid, p.name, p.description, p.created_at, p.last_updated;"
+  sqlight.query(query, db, arguments, decoder)
+  |> result.map_error(error.DatabaseError)
+}
+
 pub fn get_projects(
   db: sqlight.Connection,
   arguments: List(sqlight.Value),

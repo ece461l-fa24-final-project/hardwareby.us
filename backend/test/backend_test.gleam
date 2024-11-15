@@ -2,8 +2,11 @@ import backend
 import backend/db
 import backend/router
 import backend/web
+import gleam/http/response
+import gleam/int
 import gleam/io
 import gleam/json.{type Json}
+import gleam/result
 import gleam/string_builder
 import gleeunit
 import gleeunit/should
@@ -333,6 +336,134 @@ pub fn project_api_get_projects_test() {
         ])
       },
     )
+    |> json.to_string_builder,
+  ))
+}
+
+pub fn project_api_get_project_test() {
+  use ctx <- with_context
+  use <- with_logger
+  use token <- with_bearer_token(ctx)
+
+  // Create a project
+  let request =
+    testing.post(
+      "/api/v1/project/foo?name=Foo&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Get the project
+  let request = testing.get("/api/v1/project/foo", [#("authorization", token)])
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(200)
+
+  response.body
+  |> should.equal(wisp.Text(
+    json.object([
+      #("projectid", json.string("foo")),
+      #("name", json.string("Foo")),
+      #("description", json.string("bar")),
+      #("hardware", json.array([], of: json.int)),
+    ])
+    |> json.to_string_builder,
+  ))
+}
+
+pub fn hardware_api_get_hardware_set_test() {
+  use ctx <- with_context
+  use <- with_logger
+  use token <- with_bearer_token(ctx)
+
+  // Create project so we can create a set
+  let request =
+    testing.post(
+      "/api/v1/project/foo?name=Foo&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a new hardware set
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=foo&name=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a second hardware set
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=foo&name=bar2",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Create a new project so we can add 1 set
+  let request =
+    testing.post(
+      "/api/v1/project/bar?name=Bar&description=bar",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  // Add one set 
+  let request =
+    testing.post(
+      "/api/v1/hardware?projectid=bar&name=foo",
+      [#("authorization", token)],
+      "",
+    )
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(201)
+
+  let set_id = testing.string_body(response)
+
+  // Get hardware set using returned id.
+  let request =
+    testing.get("/api/v1/hardware/" <> set_id, [#("authorization", token)])
+  let response = router.handle_request(request, ctx)
+
+  response.status
+  |> should.equal(200)
+
+  let set_id =
+    int.parse(set_id)
+    |> result.unwrap(or: -1)
+
+  response.body
+  |> should.equal(wisp.Text(
+    json.object([
+      #("id", json.int(set_id)),
+      #("projectid", json.string("bar")),
+      #("name", json.string("foo")),
+      #("capacity", json.int(100)),
+      #("available", json.int(100)),
+    ])
     |> json.to_string_builder,
   ))
 }

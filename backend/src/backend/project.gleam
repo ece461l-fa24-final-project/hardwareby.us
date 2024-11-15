@@ -65,6 +65,38 @@ pub fn get_projects(
   |> result.unwrap(or: wisp.response(401))
 }
 
+pub fn get_project(
+  projectid: String,
+  jwt: gwt.Jwt(gwt.Verified),
+  ctx: web.Context,
+) -> wisp.Response {
+  let mapper = fn(userid: String) {
+    db.get_project(ctx.db, projectid, userid)
+    |> result.map(fn(project: web.DetailedProject) {
+      json.object([
+        #("projectid", json.string(project.id)),
+        #("name", json.string(project.name)),
+        #("description", json.string(project.description)),
+        #("hardware", json.array(project.hardware, of: json.int)),
+      ])
+    })
+    |> result.unwrap(
+      or: json.object([
+        #(
+          "error",
+          json.string("An error occured while processing your request"),
+        ),
+      ]),
+    )
+    |> json.to_string_builder
+    |> wisp.json_response(200)
+  }
+
+  gwt.get_subject(jwt)
+  |> result.map(mapper)
+  |> result.unwrap(or: wisp.response(401))
+}
+
 pub fn join_project(
   projectid: String,
   jwt: gwt.Jwt(gwt.Verified),
