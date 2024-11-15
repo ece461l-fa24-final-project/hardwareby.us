@@ -119,6 +119,7 @@ pub fn get_project(
       dyn.element(1, dyn.string),
       dyn.element(2, dyn.string),
       dyn.element(3, dyn.list(of: dyn.int)),
+      // TODO: handle case when a project doesn't have hardware
     )
   let params = [sqlight.text(projectid), sqlight.text(userid)]
   let res = sql.get_project(db.inner, params, decoder)
