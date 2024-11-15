@@ -14,7 +14,7 @@
 
 .hardwareset-title {
     font-size: 24px;
-    color: white;
+    color: #333;
     text-align: center;
 }
 
@@ -34,7 +34,7 @@
 
 .availability-label {
     font-size: 18px;
-    color: white;
+    color: #333;
 }
 
 .controls-container {

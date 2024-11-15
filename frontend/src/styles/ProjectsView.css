@@ -43,6 +43,11 @@
     color: white;
 }
 
+.project-list-title {
+    font-size: 36px;
+    color: white;
+}
+
 .project-controls {
     padding: 5rem;
     width: 50%;

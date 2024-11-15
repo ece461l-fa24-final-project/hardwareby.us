@@ -29,13 +29,13 @@ export default function ProjectsView({ token }: Readonly<ProjectsViewProps>) {
 
     return (
         <div className="container">
-            <div className="project-controls">
+            <div className="project-controls"> 
                 <CreateProjectDialog token={token} />
                 <JoinProjectDialog token={token} />
             </div>
-            <div className="project-list-div">
-                <h2>Existing Projects</h2>
-                <ul style={{ listStyle: "none" }}>
+            <div>
+                <h2 className="project-list-title">Existing Projects</h2>
+                <div className="project-list">
                     {projects.map((project) => (
                         <Project
                             key={project.projectid}
@@ -43,7 +43,7 @@ export default function ProjectsView({ token }: Readonly<ProjectsViewProps>) {
                             id={project.projectid}
                         />
                     ))}
-                </ul>
+                </div>
             </div>
         </div>
     );
